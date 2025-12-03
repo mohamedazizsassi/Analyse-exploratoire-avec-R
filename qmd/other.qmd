@@ -76,7 +76,7 @@ stop("I'm sorry Dave, I'm afraid I can't do that")
 ```{webr-r}
 print("Hello quarto-webr RevealJS world!")
 
-3 + 8
+3 + 5
 ```
 
 
