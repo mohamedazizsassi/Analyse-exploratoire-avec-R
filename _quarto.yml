@@ -39,21 +39,22 @@ format:
     code-summary: "Show code"
     code-link: true
     code-overflow: scroll
-    pdf:
-      toc: true
-      number-sections: true
-      documentclass: article
-      papersize: a4
-      classoption: 
-        - twocolumn
-        - notitlepage
+  pdf:
+    toc: false
+    number-sections: true
+    colorlinks: true
+    papersize: a4
+    geometry:
+      - top=20mm
+      - left=25mm
+      - bottom=25mm
 
 # Configuration WebR (R seulement)
 webr:
   packages: ["dplyr", "ggplot2", "readxl", "tidyr", "lubridate", "car", "lmtest"]
 
 execute:
-  freeze: false
+  freeze: true
   cache: false
   echo: false
   warning: false

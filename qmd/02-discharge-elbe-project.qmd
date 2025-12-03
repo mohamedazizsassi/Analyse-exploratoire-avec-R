@@ -1,6 +1,10 @@
 ---
 title: 'Discharge of River Elbe: Other'
 date: "2025-11-18"
+format:
+  html:
+    theme: cosmo
+    toc: true
 ---
 
 ```{r setup, include=FALSE}

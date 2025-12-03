@@ -1,12 +1,10 @@
 ---
 title: "Discharge of River Elbe: Data Management with LibreOffice"
 date: "2025-11-16"
-
 format:
   html:
-    theme: light  
+    theme: cosmo
     toc: true
-
 webr:
   show-startup-message: false
   emulate-r: true

@@ -1,6 +1,10 @@
 ---
 title: "Distribution and Confidence Intervals of Clementines"
 date: '2023-11-14'
+format:
+  html:
+    theme: cosmo
+    toc: true
 ---
 
 ```{r include=FALSE, eval=TRUE}
