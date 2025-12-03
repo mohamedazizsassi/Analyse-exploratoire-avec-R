@@ -3,6 +3,7 @@ name: Deploy Quarto Website
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   pages: write
@@ -18,30 +19,33 @@ jobs:
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
+      - name: Setup Python and Jupyter
+        run: |
+          echo "🐍 Installation de Python et Jupyter..."
+          python3 -m pip install --upgrade pip
+          python3 -m pip install jupyter nbformat ipykernel
+          
+          # Vérifier l'installation
+          python3 -m pip list | grep -E "(jupyter|nbformat|ipykernel)"
+          python3 -m jupyter --version
+
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.3.2'
 
-      - name: Install R packages (HTML only)
+      - name: Install R packages
         run: |
-          echo "📦 Installation des packages R pour HTML..."
-          
-          # MINIMUM pour HTML/WebR
+          echo "📦 Installation des packages R..."
           Rscript -e "
-            pkgs <- c('rmarkdown', 'knitr', 'dplyr', 'ggplot2', 'gplots')
+            pkgs <- c('rmarkdown', 'knitr', 'dplyr', 'ggplot2', 'readxl', 
+                     'tidyr', 'lubridate', 'car', 'lmtest', 'gplots')
             install.packages(pkgs, repos = 'https://cloud.r-project.org')
           "
 
-      - name: Install WebR extension
+      - name: Install system dependencies
         run: |
-          if [ ! -d "_extensions/coatless" ]; then
-            quarto add coatless/webr --no-prompt
-          fi
-
-      - name: Install minimal system dependencies
-        run: |
-          echo "📥 Dépendances système minimales..."
+          echo "📥 Dépendances système..."
           sudo apt-get update -q
           sudo apt-get install -y --no-install-recommends \
             libcurl4-openssl-dev \
@@ -50,27 +54,37 @@ jobs:
             libfreetype6-dev \
             libpng-dev
 
-      - name: Render HTML website
+      - name: Render website
         run: |
-          echo "🚀 Rendu HTML seulement..."
+          echo "🚀 Rendu du site web..."
           rm -rf docs/
           
-          # FORCER HTML seulement
-          quarto render --to html
+          # Rendu normal - Quarto utilisera Jupyter si nécessaire
+          quarto render
           
-          # Gérer index
+          # Gérer la page d'accueil
           [ -f "docs/index.qmd.html" ] && mv docs/index.qmd.html docs/index.html
           [ ! -f "docs/index.html" ] && echo '<html><meta http-equiv="refresh" content="0;url=qmd/"></html>' > docs/index.html
           
           # GitHub Pages
           touch docs/.nojekyll
           
-          echo "✅ Site HTML généré"
+          echo "✅ Site généré"
+          echo "📁 Contenu :"
+          ls -la docs/
 
-      - name: Upload to GitHub Pages
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
 
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v3
