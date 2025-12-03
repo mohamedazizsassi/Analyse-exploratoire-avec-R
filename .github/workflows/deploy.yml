@@ -2,183 +2,125 @@ name: Deploy Quarto Website
 
 on:
   push:
-    branches: [main, master]
-  workflow_dispatch:
+    branches: [main]
 
 permissions:
-  contents: write
   pages: write
   id-token: write
 
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        submodules: recursive
-    
-    - name: Setup Quarto
-      uses: quarto-dev/quarto-actions/setup@v2
-    
-    - name: Setup R
-      uses: r-lib/actions/setup-r@v2
-      with:
-        r-version: '4.3.2'
-    
-    - name: Cache dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/quarto
-          ~/.local/share/quarto
-          ${{ env.R_LIBS_USER }}
-        key: ${{ runner.os }}-cache-${{ hashFiles('**/_quarto.yml', '**/*.qmd') }}
-        restore-keys: |
-          ${{ runner.os }}-cache-
-    
-    # SECTION CORRIGÉE :
-    - name: Verify WebR extensions
-      run: |
-        echo "🔍 Vérification des extensions WebR..."
-        
-        # Vérifier les extensions déjà présentes
-        if [ -d "_extensions" ]; then
-          echo "📁 Extensions trouvées:"
-          ls -la _extensions/
-        else
-          echo "📁 Dossier _extensions/ non trouvé"
-        fi
-        
-        # Installer WebR seulement si absent
-        if [ ! -d "_extensions/coatless" ]; then
-          echo "📦 Installation de l'extension WebR..."
-          quarto add coatless/webr --no-prompt
-        else
-          echo "✅ Extension WebR (coatless) déjà installée"
-        fi
-        
-        if [ ! -d "_extensions/r-wasm" ]; then
-          echo "📦 Installation de l'extension r-wasm..."
-          quarto add r-wasm/webr-web --no-prompt
-        else
-          echo "✅ Extension r-wasm déjà installée"
-        fi
-    
-    - name: Install system dependencies
-      run: |
-        echo "📥 Installation des dépendances système..."
-        sudo apt-get update
-        sudo apt-get install -y \
-          libcurl4-openssl-dev \
-          libssl-dev \
-          libxml2-dev \
-          libfontconfig1-dev \
-          libharfbuzz-dev \
-          libfribidi-dev \
-          libfreetype6-dev \
-          libpng-dev \
-          libtiff5-dev \
-          libjpeg-dev \
-          libicu-dev
-    
-    - name: Install R packages
-      run: |
-        echo "📦 Installation des packages R..."
-        
-        # Packages minimaux pour WebR
-        Rscript -e "install.packages(c('dplyr', 'ggplot2', 'readxl'), repos = 'https://cloud.r-project.org')"
-        
-        # Vérifier l'installation
-        Rscript -e "cat('✅ Packages R installés\n')"
-        Rscript -e "print(sessionInfo())"
-    
-    - name: Render Quarto website
-      run: |
-        echo "🚀 Démarrage du rendu Quarto..."
-        
-        # Nettoyer le dossier docs
-        if [ -d "docs" ]; then
-          echo "🧹 Nettoyage du dossier docs existant..."
-          rm -rf docs
-        fi
-        
-        # Vérifier la configuration
-        echo "⚙️ Vérification Quarto:"
-        quarto check || true
-        
-        # Rendre le site
-        echo "📄 Rendu du site..."
-        quarto render
-        
-        # DEBUG: Voir ce qui a été généré
-        echo "📁 CONTENU de docs/:"
-        ls -la docs/
-        echo ""
-        echo "📄 Fichiers HTML générés:"
-        find docs -name "*.html" -type f | sort
-        
-        # RENOMMER index.qmd.html si nécessaire
-        echo ""
-        echo "🔄 Vérification du fichier index..."
-        if [ -f "docs/index.qmd.html" ]; then
-          echo "📝 Renommage: index.qmd.html → index.html"
-          mv docs/index.qmd.html docs/index.html
-          echo "✅ index.html créé"
-        elif [ -f "docs/index.html" ]; then
-          echo "✅ index.html existe déjà"
-        else
-          echo "⚠️ Aucun index trouvé, création..."
-          # Chercher le premier fichier HTML
-          first_html=$(find docs -name "*.html" -type f | head -1)
-          if [ -n "$first_html" ]; then
-            echo "📝 Création d'un index avec redirection vers: $first_html"
-            echo "<!DOCTYPE html>
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.3.2'
+
+      - name: Cache R packages
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-packages-${{ hashFiles('**/*.qmd', '**/_quarto.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-r-packages-
+
+      - name: Install REQUIRED R packages
+        run: |
+          echo "📦 Installation des packages R ESSENTIELS..."
+          
+          # Mettre à jour les repos
+          Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org'))"
+          
+          # Packages CRITIQUES pour Quarto/R Markdown
+          Rscript -e "install.packages(c('rmarkdown', 'knitr'), dependencies = TRUE)"
+          
+          # Packages pour vos analyses
+          Rscript -e "install.packages(c('dplyr', 'ggplot2', 'readxl', 'tidyr', 'lubridate'), dependencies = TRUE)"
+          
+          # Vérification
+          Rscript -e "
+            cat('✅ Packages installés:\n')
+            cat('- rmarkdown:', packageVersion('rmarkdown'), '\n')
+            cat('- knitr:', packageVersion('knitr'), '\n')
+            cat('- dplyr:', if(requireNamespace('dplyr', quietly=TRUE)) packageVersion('dplyr') else 'NON', '\n')
+          "
+
+      - name: Verify WebR extensions
+        run: |
+          echo "🔍 Vérification des extensions..."
+          if [ ! -d "_extensions/coatless" ]; then
+            echo "📦 Installation de WebR extension..."
+            quarto add coatless/webr --no-prompt
+          else
+            echo "✅ Extension WebR présente"
+          fi
+
+      - name: Install system dependencies
+        run: |
+          echo "📥 Installation des dépendances système..."
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-openssl-dev \
+            libssl-dev \
+            libxml2-dev \
+            libfontconfig1-dev \
+            libharfbuzz-dev \
+            libfribidi-dev \
+            libfreetype6-dev \
+            libpng-dev \
+            libtiff5-dev \
+            libjpeg-dev
+
+      - name: Render Quarto website (HTML ONLY)
+        run: |
+          echo "🚀 Rendu du site Quarto..."
+          
+          # Nettoyer
+          rm -rf docs/
+          
+          # RENDRE EN HTML SEULEMENT
+          quarto render --to html
+          
+          # DEBUG: Voir ce qui a été généré
+          echo "📁 Contenu de docs/:"
+          ls -la docs/
+          
+          # Gérer le fichier index
+          if [ -f "docs/index.qmd.html" ]; then
+            mv docs/index.qmd.html docs/index.html
+            echo "✅ index.qmd.html → index.html"
+          elif [ ! -f "docs/index.html" ]; then
+            echo "⚠️ Création d'index.html minimal"
+            echo '<!DOCTYPE html>
             <html>
             <head>
               <title>Data Analysis Lab</title>
-              <meta http-equiv=\"refresh\" content=\"0; url=$(basename $first_html)\">
+              <meta http-equiv="refresh" content="0; url=qmd/">
             </head>
             <body>
-              <p>Redirecting... <a href=\"$(basename $first_html)\">Click here</a></p>
+              <p>Redirecting to exercises...</p>
             </body>
-            </html>" > docs/index.html
-          else
-            echo "❌ Aucun fichier HTML généré!"
-            exit 1
+            </html>' > docs/index.html
           fi
-        fi
-        
-        # Vérification finale
-        echo "🔍 Vérification finale:"
-        echo "index.html: $(if [ -f "docs/index.html" ]; then echo '✅ Présent'; else echo '❌ Absent'; fi)"
-    
-    - name: Prepare for GitHub Pages
-      run: |
-        echo "🔧 Préparation pour GitHub Pages..."
-        
-        # Fichiers obligatoires
-        touch docs/.nojekyll
-        echo "✅ .nojekyll créé"
-        
-        # Vérification
-        echo "📋 Contenu final de docs/:"
-        ls -la docs/
-    
-    - name: Setup Pages
-      uses: actions/configure-pages@v3
-    
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./docs
-    
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v3
+          
+          # Fichier OBLIGATOIRE pour GitHub Pages
+          touch docs/.nojekyll
+          
+          echo "✅ Rendu terminé avec succès"
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v3
