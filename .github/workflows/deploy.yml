@@ -3,7 +3,6 @@ name: Deploy Quarto Site
 on:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   pages: write
@@ -19,141 +18,32 @@ jobs:
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Setup Python with cache
+      - name: Setup Python WITHOUT pip cache
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-          cache: 'pip'
+          # cache: 'pip'  # ← ENLEVER CETTE LIGNE
 
-      - name: Install JUPYTER-CACHE and dependencies
+      - name: Install Python packages
         run: |
-          echo "📦 Installation de jupyter-cache..."
-          
-          # Installer jupyter-cache et ses dépendances
-          python -m pip install jupyter-cache>=0.5.0
-          
-          # Installer les autres packages Jupyter requis
-          python -m pip install nbformat jupyter ipykernel
-          
-          # Vérification CRITIQUE
-          python -c "
-          try:
-              import jupyter_cache
-              print(f'✅ jupyter-cache: {jupyter_cache.__version__}')
-              
-              import nbformat
-              print(f'✅ nbformat: {nbformat.__version__}')
-              
-              import jupyter
-              print('✅ jupyter: OK')
-          except ImportError as e:
-              print(f'❌ Erreur: {e}')
-              exit(1)
-          "
+          python -m pip install --upgrade pip
+          python -m pip install jupyter-cache jupyter nbformat
 
-      - name: Setup R with cache
+      - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.3.2'
-          cache: 'packrat'
 
-      - name: Cache R packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/R
-            /usr/local/lib/R/site-library
-            ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-packages-${{ hashFiles('**/*.qmd') }}
-          restore-keys: |
-            ${{ runner.os }}-r-packages-
-
-      - name: Install R packages (INCLUDING jupyter package)
+      - name: Install R packages
         run: |
-          echo "📦 Installation des packages R..."
-          
-          Rscript -e "
-            # Packages ABSOLUMENT requis
-            required <- c(
-              'rmarkdown', 
-              'knitr',
-              'jupyter',        # <-- IMPORTANT: package R 'jupyter'
-              'dplyr', 
-              'ggplot2', 
-              'readxl', 
-              'gplots'
-            )
-            
-            # Vérifier ce qui est manquant
-            installed <- rownames(installed.packages())
-            missing <- setdiff(required, installed)
-            
-            if (length(missing) > 0) {
-              cat('Installation de', length(missing), 'packages:', paste(missing, collapse=', '), '\\n')
-              
-              # Utiliser RSPM pour plus de vitesse
-              options(repos = c(CRAN = 'https://packagemanager.rstudio.com/all/__linux__/focal/latest'))
-              
-              install.packages(
-                missing,
-                dependencies = TRUE,
-                quiet = FALSE,
-                Ncpus = 2
-              )
-            } else {
-              cat('✅ Tous les packages R sont déjà installés\\n')
-            }
-            
-            # Vérification spécifique du package jupyter
-            if (!requireNamespace('jupyter', quietly = TRUE)) {
-              cat('❌ Le package R jupyter n\\'est PAS installé! Installation...\\n')
-              install.packages('jupyter', repos = 'https://cloud.r-project.org')
-            } else {
-              cat('✅ Package R jupyter installé\\n')
-            }
-          "
+          Rscript -e "install.packages(c('rmarkdown', 'knitr', 'dplyr', 'ggplot2', 'gplots'), repos = 'https://cloud.r-project.org')"
 
-      - name: Install WebR extension
+      - name: Render site
         run: |
-          if [ ! -d "_extensions/coatless" ]; then
-            quarto add coatless/webr --no-prompt
-          fi
-
-      - name: Configure Quarto for jupyter-cache
-        run: |
-          echo "⚙️ Configuration de Quarto pour jupyter-cache..."
-          
-          # Désactiver le cache Jupyter si problématique
-          quarto config set execute.cache false
-          
-          # OU configurer le chemin du cache
-          quarto config set jupyter.cache-path /tmp/quarto-jupyter-cache
-          
-          # Vérifier la configuration
-          quarto config list
-
-      - name: Render WITHOUT Jupyter cache (solution simple)
-        run: |
-          echo "🚀 Rendu SANS cache Jupyter..."
-          
           rm -rf docs/
-          
-          # Option 1: Désactiver complètement le cache Jupyter
-          quarto render --no-cache --to html
-          
-          # Option 2: Forcer R seulement (si vous n'avez pas besoin de Python)
-          # quarto render --execute-engine r --to html
-          
-          # Gérer index.html
+          quarto render --to html
           [ -f "docs/index.qmd.html" ] && mv docs/index.qmd.html docs/index.html
-          [ ! -f "docs/index.html" ] && echo '<html><meta http-equiv="refresh" content="0;url=qmd/"></html>' > docs/index.html
-          
           touch docs/.nojekyll
 
-      - name: Upload to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: actions/deploy-pages@v3
