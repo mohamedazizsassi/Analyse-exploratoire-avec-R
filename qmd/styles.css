@@ -1,4 +1,4 @@
-<style>
+
 /* Style global pour RevealJS - marges du haut réduites au maximum */
 
 /* Section principale */
@@ -103,4 +103,30 @@
     margin-top: 0 !important;
     padding-top: 0 !important;
 }
-</style>
+/* Icône de retour home */
+.home-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: white;
+  border-radius: 50%;
+  padding: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.home-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.home-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #0366d6;
+}
+
+.home-icon:hover svg {
+  color: #054da7;
+}
