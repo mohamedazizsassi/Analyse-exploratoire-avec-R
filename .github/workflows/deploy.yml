@@ -4,46 +4,62 @@ on:
   push:
     branches: [main]
 
+# PERMISSIONS CRITIQUES
 permissions:
+  contents: read
   pages: write
   id-token: write
 
 jobs:
   build:
+    # ENVIRONNEMENT OBLIGATOIRE
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Setup Python WITHOUT pip cache
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          # cache: 'pip'  # ← ENLEVER CETTE LIGNE
-
-      - name: Install Python packages
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install jupyter-cache jupyter nbformat
-
       - name: Setup R
         uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: '4.3.2'
 
-      - name: Install R packages
+      - name: Install packages
         run: |
-          Rscript -e "install.packages(c('rmarkdown', 'knitr', 'dplyr', 'ggplot2', 'gplots'), repos = 'https://cloud.r-project.org')"
+          # MINIMAL - seulement l'essentiel
+          Rscript -e "install.packages(c('rmarkdown', 'knitr', 'dplyr'), repos = 'https://cloud.r-project.org')"
 
       - name: Render site
         run: |
+          echo "🚀 Rendu du site..."
           rm -rf docs/
+          
+          # SIMPLE - pas d'options complexes
           quarto render --to html
+          
+          # Gérer index.html
           [ -f "docs/index.qmd.html" ] && mv docs/index.qmd.html docs/index.html
+          
+          # Créer index.html si manquant
+          [ ! -f "docs/index.html" ] && echo '<html><head><meta http-equiv="refresh" content="0;url=qmd/"></head></html>' > docs/index.html
+          
+          # Fichier REQUIS
           touch docs/.nojekyll
+          
+          echo "✅ Site généré"
 
-      - name: Deploy
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v3
