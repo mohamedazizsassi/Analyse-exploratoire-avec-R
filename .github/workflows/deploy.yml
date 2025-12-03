@@ -12,6 +12,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # AJOUTER CETTE VARIABLE D'ENVIRONNEMENT
+    env:
+      JEKYLL_ENV: production  # Désactive certaines fonctionnalités Jekyll
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,177 +24,130 @@ jobs:
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Install Python and Jupyter with cache
+      - name: Install Python and Jupyter
         run: |
-          echo "🐍 Installation Python/Jupyter..."
           python3 -m pip install --upgrade pip
           python3 -m pip install jupyter nbformat ipykernel jupyter-cache nbclient
-          echo "✅ jupyter-cache installé"
 
-      - name: Setup R with binary repository
+      - name: Setup R
         uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.3'
           use-public-rspm: true
 
-      - name: Cache R packages
-        uses: actions/cache@v3
-        id: r-cache
-        with:
-          path: |
-            /usr/local/lib/R/site-library
-            ~/.R/library
-          key: ${{ runner.os }}-r4.3-packages-${{ hashFiles('.github/workflows/deploy.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-r4.3-packages-
-
-      - name: Install system dependencies
+      - name: Install R packages
         run: |
-          echo "📦 Dépendances système..."
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends \
-            libcurl4-openssl-dev \
-            libxml2-dev \
-            libfontconfig1-dev \
-            libfreetype6-dev \
-            libpng-dev \
-            libharfbuzz-dev \
-            libfribidi-dev
-
-      - name: Install R packages FAST (with RSPM binaries)
-        if: steps.r-cache.outputs.cache-hit != 'true'
-        run: |
-          echo "⚡ Installation ULTRA RAPIDE des packages R via RSPM..."
-          
-          # Configuration R pour RSPM (binaires Ubuntu 22.04)
-          cat > ~/.Rprofile << 'EOF'
-          # Configuration GitHub Actions - RSPM pour binaires
-          local({
-            os <- Sys.info()[["sysname"]]
-            if (os == "Linux") {
-              options(repos = c(
-                RSPM = "https://packagemanager.rstudio.com/cran/__linux__/jammy/latest",
-                CRAN = "https://cloud.r-project.org"
-              ))
-              options(install.packages.compile.from.source = "never")
-            } else {
-              options(repos = c(CRAN = "https://cloud.r-project.org"))
-            }
-            options(Ncpus = 4)
-            options(INSTALL_opts = "--no-multiarch --no-docs --no-test-load")
-          })
-          EOF
-          
-          echo "🔍 Configuration des dépôts R :"
-          Rscript -e "getOption('repos')"
-          
           Rscript -e "
-          start_time <- Sys.time()
-          all_pkgs <- c('rmarkdown', 'knitr', 'tinytex', 'dplyr', 'ggplot2', 
-                       'tidyr', 'readxl', 'lubridate', 'car', 'lmtest', 'gplots',
-                       'stringr', 'purrr', 'tibble', 'rlang')
-          
-          cat('📦 Installation de', length(all_pkgs), 'packages...\\n')
-          
-          install_with_retry <- function(pkgs, retries = 2) {
-            for (i in 1:retries) {
-              tryCatch({
-                install.packages(pkgs, quiet = TRUE, Ncpus = 4)
-                cat('✅ Installation réussie (tentative', i, ')\\n')
-                return(TRUE)
-              }, error = function(e) {
-                if (i == retries) {
-                  cat('❌ Échec après', retries, 'tentatives:\\n', e$message, '\\n')
-                  return(FALSE)
-                }
-                cat('⚠️ Tentative', i, 'échouée, réessaye...\\n')
-                Sys.sleep(3)
-              })
-            }
-          }
-          
-          install_with_retry(c('rmarkdown', 'knitr'))
-          install_with_retry(c('dplyr', 'ggplot2', 'tidyr'))
-          install_with_retry(c('readxl', 'lubridate', 'stringr', 'purrr'))
-          install_with_retry(c('car', 'lmtest', 'gplots'))
-          
-          cat('\\n✅ Vérification des installations...\\n')
-          installed <- rownames(installed.packages())
-          
-          for (pkg in all_pkgs) {
-            if (pkg %in% installed) cat('✓', pkg, '\\n')
-            else cat('✗', pkg, '(MANQUANT)\\n')
-          }
-          
-          end_time <- Sys.time()
-          cat('\\n⏱️ Temps total:', round(difftime(end_time, start_time, units = 'mins'), 1), 'minutes\\n')
-          "
-          
-          echo "🎯 Packages R installés avec succès!"
-
-      - name: Install TinyTeX (for PDF if needed)
-        run: |
-          echo "📄 Installation de TinyTeX..."
-          Rscript -e "
-          if(!requireNamespace('tinytex', quietly = TRUE)) {
-            install.packages('tinytex')
-          }
-          tinytex::install_tinytex()
+          options(Ncpus = 4, install.packages.compile.from.source = 'never')
+          install.packages(
+            c('rmarkdown', 'knitr', 'dplyr', 'ggplot2', 'tidyr', 
+              'readxl', 'lubridate', 'car', 'lmtest', 'gplots'),
+            repos = 'https://cran.rstudio.com/',
+            quiet = FALSE
+          )
           "
 
-      - name: Clean temporary files
+      # ÉTAPE CRITIQUE : Désactiver Jekyll AVANT le rendu
+      - name: Pre-disable Jekyll
         run: |
-          echo "🧹 Nettoyage..."
+          echo "🛑 DÉSACTIVATION DE JEKYLL (avant rendu)..."
+          
+          # Créer .nojekyll à la racine du projet
+          touch .nojekyll
+          
+          # Créer aussi dans le futur dossier docs
+          mkdir -p docs
+          touch docs/.nojekyll
+          
+          # Supprimer tout fichier qui pourrait déclencher Jekyll
+          rm -rf docs/_site docs/_config.yml docs/Gemfile 2>/dev/null || true
+          
+          echo "✅ Jekyll pré-désactivé"
+
+      - name: Clean before render
+        run: |
+          echo "🧹 Nettoyage avant rendu..."
+          # Garder .nojekyll mais nettoyer le reste
+          find . -name "_site" -type d -exec rm -rf {} + 2>/dev/null || true
           rm -rf _freeze/ .quarto-cache/ 2>/dev/null || true
 
-      - name: Render website
+      - name: Render website with explicit Jekyll disable
         run: |
-          echo "🚀 Rendu du site web..."
+          echo "🚀 Rendu du site web (Jekyll désactivé)..."
           
-          # Nettoyer docs AVANT de rendre
-          rm -rf docs/
+          # Forcer Quarto à ignorer Jekyll
+          export JEKYLL_ENV=production
           
-          # Rendu
-          quarto render --cache
+          # Rendu avec option --no-jekyll si disponible
+          quarto render || quarto render --cache
           
-          # Post-traitement CRITIQUE
-          if [ -f "docs/index.qmd.html" ]; then
-            mv docs/index.qmd.html docs/index.html
-            echo "✅ index.qmd.html renommé en index.html"
-          fi
-          
-          echo "✅ Génération terminée!"
+          echo "✅ Rendu terminé"
 
-      - name: Disable Jekyll for GitHub Pages
+      # ÉTAPE CRITIQUE : Post-désactivation de Jekyll
+      - name: Post-disable Jekyll (force)
         run: |
-          echo "🛑 DÉSACTIVATION DE JEKYLL..."
+          echo "🛑 DÉSACTIVATION FORCÉE DE JEKYLL (après rendu)..."
           
           # S'assurer que docs/ existe
           mkdir -p docs
           
-          # 1. Créer .nojekyll (méthode principale)
-          echo "Creating .nojekyll file..."
-          touch docs/.nojekyll
+          # 1. .nojekyll dans docs/ (le plus important)
+          echo "NO JEKYLL - Static site" > docs/.nojekyll
           
-          # 2. Créer un fichier vide pour désactiver Jekyll complètement
-          echo "Creating empty .jekyll file..."
-          echo "" > docs/.jekyll 2>/dev/null || true
+          # 2. Créer un fichier .no-jekyll aussi (pour certains systèmes)
+          echo "" > docs/.no-jekyll 2>/dev/null || true
           
-          # 3. Supprimer tout dossier _site qui pourrait exister
-          echo "Removing any _site directory..."
-          rm -rf docs/_site 2>/dev/null || true
+          # 3. Supprimer TOUS les fichiers/dossiers Jekyll
+          echo "Suppression des fichiers Jekyll..."
+          find docs/ -name "_*" -type d -exec rm -rf {} + 2>/dev/null || true
+          find docs/ -name "*.scss" -type f -delete 2>/dev/null || true
+          find docs/ -name "*.sass" -type f -delete 2>/dev/null || true
+          find docs/ -name "_config*" -type f -delete 2>/dev/null || true
+          find docs/ -name "Gemfile*" -type f -delete 2>/dev/null || true
           
-          # 4. Supprimer tout fichier de configuration Jekyll
-          echo "Removing Jekyll config files..."
-          rm -f docs/_config.yml docs/Gemfile docs/Gemfile.lock 2>/dev/null || true
+          # 4. Renommer index.qmd.html si nécessaire
+          if [ -f "docs/index.qmd.html" ]; then
+            mv docs/index.qmd.html docs/index.html
+            echo "✅ index.qmd.html → index.html"
+          fi
           
-          # 5. Lister les fichiers pour vérification
-          echo "📁 Contenu de docs/:"
+          # 5. Vérifier qu'il n'y a pas de assets/css/style.scss
+          if [ -f "docs/assets/css/style.scss" ]; then
+            echo "⚠️  Suppression de style.scss problématique"
+            rm -f docs/assets/css/style.scss
+            # Créer un fichier CSS vide à la place
+            mkdir -p docs/assets/css
+            echo "/* CSS vide - Jekyll désactivé */" > docs/assets/css/style.css
+          fi
+          
+          # 6. Liste finale pour vérification
+          echo "📁 Contenu final de docs/:"
           ls -la docs/
-          echo "🔍 Vérification .nojekyll:"
-          ls -la docs/.nojekyll || echo ".nojekyll non trouvé"
+          echo ""
+          echo "🔍 Fichiers cachés:"
+          ls -la docs/.* 2>/dev/null || true
           
-          echo "✅ Jekyll désactivé avec succès"
+          echo "✅ Jekyll complètement désactivé"
+
+      - name: Verify no Jekyll files remain
+        run: |
+          echo "🔍 Vérification qu'aucun fichier Jekyll ne reste..."
+          
+          if find docs/ -name "*.scss" -o -name "_*" -type d | grep -q .; then
+            echo "❌ Fichiers Jekyll détectés!"
+            find docs/ -name "*.scss" -o -name "_*" -type d
+            exit 1
+          else
+            echo "✅ Aucun fichier Jekyll détecté"
+          fi
+          
+          # Vérifier que .nojekyll existe
+          if [ -f "docs/.nojekyll" ]; then
+            echo "✅ .nojekyll présent"
+          else
+            echo "❌ .nojekyll manquant!"
+            exit 1
+          fi
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
