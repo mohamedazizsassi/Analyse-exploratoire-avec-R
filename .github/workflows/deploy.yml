@@ -1,4 +1,4 @@
-name: Deploy Static Site
+name: Deploy Quarto Site
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -18,27 +18,111 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup and Build
+      - name: Setup Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install packages
         run: |
-          # Installer Quarto
-          wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.553/quarto-1.4.553-linux-amd64.deb
-          sudo dpkg -i quarto-*.deb
-          
-          # Installer R packages
-          sudo apt-get update
-          sudo apt-get install -y r-base
-          Rscript -e "install.packages(c('rmarkdown', 'knitr'), repos='https://cloud.r-project.org')"
-          
-          # Nettoyer et construire
+          Rscript -e "install.packages(c('rmarkdown', 'knitr', 'dplyr', 'ggplot2'), repos = 'https://cloud.r-project.org')"
+
+      - name: Build Quarto site
+        run: |
+          echo "🏗️ Construction du site..."
           rm -rf docs/
           quarto render --to html
           
-          # Préparer pour GitHub Pages
-          [ -f "docs/index.qmd.html" ] && mv docs/index.qmd.html docs/index.html
-          echo "DISABLE_JEKYLL" > docs/.nojekyll
+          # DEBUG
+          echo "📁 Fichiers générés :"
+          find docs -type f | head -20
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: KILL Jekyll completely
+        run: |
+          echo "☠️ Destruction totale de Jekyll..."
+          
+          # 1. Fichier .nojekyll EXPLICITE
+          echo "# DISABLE JEKYLL COMPLETELY" > docs/.nojekyll
+          echo "# This is a static HTML site" >> docs/.nojekyll
+          
+          # 2. Supprimer TOUS les dossiers/assets Jekyll
+          rm -rf docs/_posts docs/_layouts docs/_includes docs/_sass docs/_data 2>/dev/null || true
+          rm -rf docs/assets 2>/dev/null || true  # <-- CRITIQUE
+          
+          # 3. Supprimer tous les fichiers .scss, .sass
+          find docs -name "*.scss" -delete
+          find docs -name "*.sass" -delete
+          
+          # 4. Créer un _config.yml qui DÉSACTIVE Jekyll
+          cat > docs/_config.yml << 'EOF'
+# JEKYLL COMPLETELY DISABLED
+safe: true
+plugins: []
+theme: null
+exclude:
+  - "*"
+include:
+  - ".nojekyll"
+  - "_config.yml"
+EOF
+          
+          # 5. Renommer index
+          [ -f "docs/index.qmd.html" ] && mv docs/index.qmd.html docs/index.html
+          
+          # 6. Vérifier
+          echo "✅ Après nettoyage :"
+          ls -la docs/
+          echo "Fichiers restants :"
+          find docs -type f | wc -l
+
+      - name: Create minimal index if missing
+        run: |
+          if [ ! -f "docs/index.html" ]; then
+            cat > docs/index.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Data Analysis Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 40px auto; max-width: 800px; padding: 20px; }
+    h1 { color: #0366d6; }
+    .card { background: #f6f8fa; border-radius: 6px; padding: 20px; margin: 20px 0; }
+    a { color: #0366d6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>📊 Data Analysis Lab</h1>
+  <p>Interactive exercises using WebR (R in your browser).</p>
+  
+  <div class="card">
+    <h2>🔬 Lab Exercises</h2>
+    <ul>
+      <li><a href="qmd/01-pivot-tables-with-libreoffice.html">01 - Pivot Tables</a></li>
+      <li><a href="qmd/03-discharge-elbe.html">03 - River Discharge</a></li>
+      <li><a href="qmd/04-distributions-leaves.html">04 - Leaf Distributions</a></li>
+      <li><a href="qmd/05-distributions-fruits-tidyverse.html">05 - Fruit Distributions</a></li>
+      <li><a href="qmd/test_stat.html">Test Statistics</a></li>
+    </ul>
+  </div>
+  
+  <p><em>Built with Quarto + WebR</em></p>
+</body>
+</html>
+EOF
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: docs
-          branch: gh-pages
+          path: './docs'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
