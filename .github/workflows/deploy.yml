@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Setup Quarto
         uses: quarto-dev/quarto-actions/setup@v2
@@ -25,33 +23,24 @@ jobs:
         with:
           r-version: '4.3.2'
 
-      - name: Cache R packages
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-r-packages-${{ hashFiles('**/*.qmd', '**/_quarto.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-r-packages-
-
       - name: Install REQUIRED R packages
         run: |
-          echo "📦 Installation des packages R ESSENTIELS..."
+          echo "📦 Installation des packages R..."
           
-          # Mettre à jour les repos
-          Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org'))"
+          # Installer les packages essentiels
+          Rscript -e "install.packages(c('rmarkdown', 'knitr', 'dplyr', 'ggplot2', 'readxl'), repos = 'https://cloud.r-project.org')"
           
-          # Packages CRITIQUES pour Quarto/R Markdown
-          Rscript -e "install.packages(c('rmarkdown', 'knitr'), dependencies = TRUE)"
-          
-          # Packages pour vos analyses
-          Rscript -e "install.packages(c('dplyr', 'ggplot2', 'readxl', 'tidyr', 'lubridate'), dependencies = TRUE)"
-          
-          # Vérification
+          # Vérification SIMPLIFIÉE
           Rscript -e "
             cat('✅ Packages installés:\n')
-            cat('- rmarkdown:', packageVersion('rmarkdown'), '\n')
-            cat('- knitr:', packageVersion('knitr'), '\n')
-            cat('- dplyr:', if(requireNamespace('dplyr', quietly=TRUE)) packageVersion('dplyr') else 'NON', '\n')
+            pkgs <- c('rmarkdown', 'knitr', 'dplyr', 'ggplot2')
+            for(pkg in pkgs) {
+              if(requireNamespace(pkg, quietly = TRUE)) {
+                cat('- ', pkg, ': OK\n', sep = '')
+              } else {
+                cat('- ', pkg, ': FAILED\n', sep = '')
+              }
+            }
           "
 
       - name: Verify WebR extensions
@@ -64,58 +53,31 @@ jobs:
             echo "✅ Extension WebR présente"
           fi
 
-      - name: Install system dependencies
-        run: |
-          echo "📥 Installation des dépendances système..."
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcurl4-openssl-dev \
-            libssl-dev \
-            libxml2-dev \
-            libfontconfig1-dev \
-            libharfbuzz-dev \
-            libfribidi-dev \
-            libfreetype6-dev \
-            libpng-dev \
-            libtiff5-dev \
-            libjpeg-dev
-
-      - name: Render Quarto website (HTML ONLY)
+      - name: Render Quarto website
         run: |
           echo "🚀 Rendu du site Quarto..."
           
           # Nettoyer
           rm -rf docs/
           
-          # RENDRE EN HTML SEULEMENT
+          # Rendre en HTML
           quarto render --to html
-          
-          # DEBUG: Voir ce qui a été généré
-          echo "📁 Contenu de docs/:"
-          ls -la docs/
           
           # Gérer le fichier index
           if [ -f "docs/index.qmd.html" ]; then
             mv docs/index.qmd.html docs/index.html
             echo "✅ index.qmd.html → index.html"
-          elif [ ! -f "docs/index.html" ]; then
-            echo "⚠️ Création d'index.html minimal"
-            echo '<!DOCTYPE html>
-            <html>
-            <head>
-              <title>Data Analysis Lab</title>
-              <meta http-equiv="refresh" content="0; url=qmd/">
-            </head>
-            <body>
-              <p>Redirecting to exercises...</p>
-            </body>
-            </html>' > docs/index.html
           fi
           
-          # Fichier OBLIGATOIRE pour GitHub Pages
+          # S'assurer qu'il y a un index.html
+          if [ ! -f "docs/index.html" ]; then
+            echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=qmd/"></head></html>' > docs/index.html
+          fi
+          
+          # Fichier obligatoire
           touch docs/.nojekyll
           
-          echo "✅ Rendu terminé avec succès"
+          echo "✅ Rendu terminé"
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
