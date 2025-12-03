@@ -19,82 +19,116 @@ jobs:
     - name: Setup Quarto
       uses: quarto-dev/quarto-actions/setup@v2
     
-    # CORRECTION : Installation COMPLÈTE de TinyTeX
-    - name: Install TinyTeX properly
+    # CACHE partagé avec deploy.yml
+    - name: Cache TinyTeX
+      uses: actions/cache@v3
+      id: cache-tinytex
+      with:
+        path: ~/.TinyTeX
+        key: ${{ runner.os }}-tinytex-shared
+        restore-keys: |
+          ${{ runner.os }}-tinytex-
+    
+    # Installer seulement si pas dans cache OU si installation échoue
+    - name: Install or restore TinyTeX
       run: |
-        echo "📄 Installation complète de TinyTeX..."
+        echo "🔍 Vérification/Installation de TinyTeX..."
         
-        # 1. Supprimer toute installation précédente
-        rm -rf ~/.TinyTeX 2>/dev/null || true
+        # Si déjà dans le cache, juste configurer le PATH
+        if [ -d "$HOME/.TinyTeX" ]; then
+          echo "✅ TinyTeX trouvé dans le cache"
+          export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+          echo "$HOME/.TinyTeX/bin/x86_64-linux" >> $GITHUB_PATH
+          which pdflatex || echo "pdflatex pas encore dans PATH"
+          exit 0
+        fi
         
-        # 2. Installer TinyTeX
+        # Sinon, installer
+        echo "📄 Installation de TinyTeX..."
+        
+        # 1. Installer avec un miroir spécifique
         wget -qO- "https://yihui.org/tinytex/install-unx.sh" | sh
         
-        # 3. Ajouter au PATH
+        # 2. Configurer PATH
         TEX_PATH="$HOME/.TinyTeX/bin/x86_64-linux"
         echo "$TEX_PATH" >> $GITHUB_PATH
-        
-        # 4. Exporter le PATH pour cette étape aussi
         export PATH="$TEX_PATH:$PATH"
         
-        # 5. Attendre un peu pour que l'installation termine
-        sleep 5
+        # 3. Changer IMMÉDIATEMENT le dépôt avant toute opération
+        cd "$TEX_PATH"
+        ./tlmgr option repository https://ftp.math.utah.edu/pub/texlive/tlnet
         
-        # 6. Mettre à jour et installer les packages nécessaires
-        tlmgr update --self
-        tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet
+        # 4. Mettre à jour SANS échec si version désynchronisée
+        echo "🔄 Mise à jour tlmgr (ignorer les erreurs de version)..."
+        set +e  # Ne pas s'arrêter sur erreur
+        ./tlmgr update --self 2>&1 | grep -v "seems to be older" || true
+        set -e  # Réactiver arrêt sur erreur
         
-        # 7. Installer les packages essentiels
-        tlmgr install \
-          geometry \
-          hyperref \
-          fancyhdr \
-          sectsty \
-          microtype \
-          booktabs \
-          array \
-          pdfpages \
-          wrapfig \
-          float \
-          caption \
-          subcaption \
-          amsmath \
-          amsfonts \
-          amssymb \
-          || echo "⚠️ Certains packages déjà installés"
+        # 5. Installer les packages essentiels
+        echo "📦 Installation des packages LaTeX..."
+        for pkg in geometry hyperref fancyhdr sectsty microtype \
+                   booktabs array pdfpages wrapfig float caption subcaption \
+                   amsmath amsfonts amssymb; do
+          ./tlmgr install "$pkg" 2>/dev/null || echo "Package $pkg: déjà installé ou erreur"
+        done
         
-        # 8. Vérifier
-        echo "✅ Installation terminée"
-        which pdflatex
-        pdflatex --version | head -2
+        echo "✅ TinyTeX installé/prêt"
+    
+    - name: Verify LaTeX installation
+      run: |
+        echo "🔍 Vérification finale..."
+        export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+        
+        if command -v pdflatex &> /dev/null; then
+          echo "✅ pdflatex disponible"
+          pdflatex --version | head -2
+        else
+          echo "❌ pdflatex NON trouvé, tentative alternative..."
+          # Vérifier si binaire existe
+          if [ -f "$HOME/.TinyTeX/bin/x86_64-linux/pdflatex" ]; then
+            echo "pdflatex existe mais pas dans PATH, ajustement..."
+            export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+            which pdflatex
+          else
+            echo "ERREUR: pdflatex absent, installation échouée"
+            exit 1
+          fi
+        fi
     
     - name: Render PDFs
       run: |
         echo "📄 Génération des PDFs..."
         
-        # Vérifier que pdflatex est disponible (sans arrêter si échec)
-        if ! command -v pdflatex &> /dev/null; then
-          echo "❌ ERREUR: pdflatex non trouvé!"
-          echo "PATH actuel: $PATH"
-          echo "Recherche de pdflatex:"
-          find ~/.TinyTeX -name pdflatex -type f 2>/dev/null || true
-          # Essayer de récupérer le PATH
-          export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
-        fi
+        # FORCER le PATH
+        export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
         
-        # Vérifier à nouveau
-        which pdflatex || { echo "pdflatex toujours introuvable"; exit 1; }
+        # Vérifier
+        which pdflatex || { echo "pdflatex introuvable"; exit 1; }
+        echo "pdflatex version:"
+        pdflatex --version | head -2
         
-        # Rendre les PDFs
+        # Générer seulement les fichiers qui spécifient format PDF
         for file in qmd/*.qmd; do
           if [[ -f "$file" ]]; then
-            echo "--- Rendu de $(basename "$file") ---"
-            quarto render "$file" --to pdf --no-cache || \
-              echo "⚠️ Échec partiel pour $(basename "$file")"
+            base=$(basename "$file" .qmd)
+            echo "--- Rendu: $base ---"
+            
+            # Option: vérifier si le fichier contient 'format: pdf' ou 'pdf: default'
+            if grep -q "format:.*pdf" "$file" || \
+               grep -q "pdf:.*default" "$file" || \
+               [[ "$base" == "test_stat" ]] || \
+               [[ "$base" == "06-classical-tests" ]]; then
+              
+              echo "📄 Conversion en PDF..."
+              quarto render "$file" --to pdf || \
+                echo "⚠️ Échec pour $base"
+            else
+              echo "⏭️  $base: pas de format PDF spécifié, ignoré"
+            fi
           fi
         done
         
-        # Afficher les PDFs générés
+        # Résumé
         echo "📊 PDFs générés:"
         ls -la qmd/*.pdf 2>/dev/null || echo "Aucun PDF généré"
     
@@ -102,6 +136,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: pdf-outputs
-        path: |
-          qmd/*.pdf
+        path: qmd/*.pdf
         retention-days: 7
