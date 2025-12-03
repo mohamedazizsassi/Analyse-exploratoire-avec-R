@@ -188,7 +188,42 @@ jobs:
           "
           
           echo "✅ Installation R terminée"
-
+# AJOUTER CETTE ÉTAPE : Installer TinyTeX
+      - name: Install TinyTeX for LaTeX formulas
+        run: |
+          echo "📄 Installation de TinyTeX pour les formules..."
+          
+          # 1. Installer TinyTeX
+          wget -qO- "https://yihui.org/tinytex/install-unx.sh" | sh
+          
+          # 2. Ajouter au PATH
+          echo "$HOME/.TinyTeX/bin/x86_64-linux" >> $GITHUB_PATH
+          
+          # 3. Attendre que le PATH soit mis à jour
+          export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+          
+          # 4. Mettre à jour tlmgr et installer les packages manquants
+          tlmgr update --self
+          tlmgr install \
+            array \
+            subcaption \
+            booktabs \
+            float \
+            geometry \
+            hyperref \
+            caption \
+            fancyhdr \
+            microtype \
+            wrapfig \
+            amsmath \
+            amsfonts \
+            amssymb \
+            || echo "⚠️ Certains packages déjà installés"
+          
+          # 5. Vérifier l'installation
+          which pdflatex
+          pdflatex --version
+          echo "✅ TinyTeX installé"
       - name: Render Quarto website
         run: |
           echo "🚀 Rendu du site Quarto..."
