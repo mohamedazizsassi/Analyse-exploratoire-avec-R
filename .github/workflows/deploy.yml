@@ -198,7 +198,7 @@ jobs:
           
           echo "✅ Rendu terminé"
 
-      # ÉTAPE CRITIQUE : Post-traitement SANS JEKYLL
+      # ÉTAPE CRITIQUE : Post-traitement SANS JEKYL
       - name: Post-process to ELIMINATE Jekyll
         run: |
           echo "🛑 ÉLIMINATION DÉFINITIVE DE JEKYLL..."
