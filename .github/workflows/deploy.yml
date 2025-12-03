@@ -1,65 +1,44 @@
-name: Deploy Quarto Site
+name: Deploy Static Site
 
 on:
   push:
     branches: [main]
 
-# PERMISSIONS CRITIQUES
 permissions:
-  contents: read
   pages: write
   id-token: write
 
 jobs:
-  build:
-    # ENVIRONNEMENT OBLIGATOIRE
+  deploy:
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     
-    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Setup R
-        uses: r-lib/actions/setup-r@v2
-
-      - name: Install packages
+      - name: Setup and Build
         run: |
-          # MINIMAL - seulement l'essentiel
-          Rscript -e "install.packages(c('rmarkdown', 'knitr', 'dplyr'), repos = 'https://cloud.r-project.org')"
-
-      - name: Render site
-        run: |
-          echo "🚀 Rendu du site..."
-          rm -rf docs/
+          # Installer Quarto
+          wget -q https://github.com/quarto-dev/quarto-cli/releases/download/v1.4.553/quarto-1.4.553-linux-amd64.deb
+          sudo dpkg -i quarto-*.deb
           
-          # SIMPLE - pas d'options complexes
+          # Installer R packages
+          sudo apt-get update
+          sudo apt-get install -y r-base
+          Rscript -e "install.packages(c('rmarkdown', 'knitr'), repos='https://cloud.r-project.org')"
+          
+          # Nettoyer et construire
+          rm -rf docs/
           quarto render --to html
           
-          # Gérer index.html
+          # Préparer pour GitHub Pages
           [ -f "docs/index.qmd.html" ] && mv docs/index.qmd.html docs/index.html
-          
-          # Créer index.html si manquant
-          [ ! -f "docs/index.html" ] && echo '<html><head><meta http-equiv="refresh" content="0;url=qmd/"></head></html>' > docs/index.html
-          
-          # Fichier REQUIS
-          touch docs/.nojekyll
-          
-          echo "✅ Site généré"
+          echo "DISABLE_JEKYLL" > docs/.nojekyll
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: './docs'
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v3
+          folder: docs
+          branch: gh-pages
