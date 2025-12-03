@@ -9,7 +9,7 @@ webr:
   packages: ['ggplot2', 'dplyr', 'effsize']
 filters:
   - webr
-css: styles.css
+css: qmd/styles.css
 ---
 
 ## Statistical Testing Framework
