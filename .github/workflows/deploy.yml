@@ -5,9 +5,16 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# AJOUTER 'contents: read' et configurer correctement
 permissions:
+  contents: read  # <-- AJOUTER CETTE LIGNE
   pages: write
   id-token: write
+
+# AJOUTER la configuration de concurrence
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -182,6 +189,9 @@ jobs:
           touch docs/.nojekyll
           
           echo "✅ Génération terminée!"
+
+      - name: Setup Pages  # <-- AJOUTER CETTE ÉTAPE
+        uses: actions/configure-pages@v3
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
