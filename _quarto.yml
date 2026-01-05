@@ -6,7 +6,7 @@ project:
     - "qmd/*.qmd"
 
 website:
-  title: "Elements of Data Analysis and Statistics - Lab Exercises"
+  title: "Analyse exploratoire de la réussite scolaire"
   site-url: "https://nevermind78.github.io/capstone_R/"
   repo-url: "https://github.com/nevermind78/capstone_R"
   
@@ -17,18 +17,7 @@ website:
     contents:
       - section: Projects
         contents:
-          - qmd/01-pivot-tables-with-libreoffice.qmd
-          - qmd/03-discharge-elbe.qmd
-          - qmd/04-distributions-leaves.qmd
-          - qmd/05-distributions-fruits-tidyverse.qmd
-          - qmd/test_stat.qmd
-      - section: Presentations
-        contents:
-          - qmd/06-classical-tests.qmd
-      - section: other
-        contents:
-          - qmd/other.qmd
-
+          - qmd/student-performance-eda.qmd
 format:
   html:
     theme: light
@@ -39,15 +28,6 @@ format:
     code-summary: "Show code"
     code-link: true
     code-overflow: scroll
-  pdf:
-    toc: false
-    number-sections: true
-    colorlinks: true
-    papersize: a4
-    geometry:
-      - top=20mm
-      - left=25mm
-      - bottom=25mm
 
 # Configuration WebR (R seulement)
 webr:
@@ -67,5 +47,3 @@ kernel:
 
 bibliography: bib.bib
 csl: apa.csl
-
-latex-auto-install: true

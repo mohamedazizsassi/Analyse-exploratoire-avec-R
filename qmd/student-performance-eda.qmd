@@ -1,0 +1,642 @@
+---
+title: "Analyse exploratoire de la réussite scolaire"
+subtitle: "Étude comparative : Mathématiques vs Langue Portugaise"
+date: "2026-01-05"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(forcats)
+library(knitr)
+library(corrplot)
+
+knitr::opts_chunk$set(
+
+  fig.align = "center",
+  fig.width = 9,
+  fig.height = 5
+)
+
+# Dictionnaire des variables (Cortez & Silva, 2008)
+var_dictionary <- tibble::tribble(
+
+  ~variable, ~description, ~type_valeurs,
+	"school", "École", "binaire: GP (Gabriel Pereira) / MS (Mousinho da Silveira)",
+	"sex", "Sexe", "binaire: F / M",
+	"age", "Âge", "numérique: 15 à 22",
+	"address", "Type d'adresse", "binaire: U (urbain) / R (rural)",
+	"famsize", "Taille de la famille", "binaire: LE3 (≤3) / GT3 (>3)",
+	"Pstatus", "Cohabitation des parents", "binaire: T (ensemble) / A (séparés)",
+	"Medu", "Éducation de la mère", "numérique: 0 aucun; 1 primaire; 2 5e–9e; 3 secondaire; 4 supérieur",
+	"Fedu", "Éducation du père", "numérique: 0 aucun; 1 primaire; 2 5e–9e; 3 secondaire; 4 supérieur",
+	"Mjob", "Profession de la mère", "nominal: teacher / health / services / at_home / other",
+	"Fjob", "Profession du père", "nominal: teacher / health / services / at_home / other",
+	"reason", "Raison du choix de l'école", "nominal: home / reputation / course / other",
+	"guardian", "Tuteur légal", "nominal: mother / father / other",
+	"traveltime", "Temps de trajet domicile-école", "numérique: 1 <15 min; 2 15–30; 3 30–60; 4 >1h",
+	"studytime", "Temps d'étude hebdomadaire", "numérique: 1 <2h; 2 2–5h; 3 5–10h; 4 >10h",
+	"failures", "Échecs scolaires passés", "numérique: 0–3 (valeur 4 si ≥4 dans certaines versions)",
+	"schoolsup", "Soutien scolaire supplémentaire", "binaire: yes / no",
+	"famsup", "Soutien éducatif familial", "binaire: yes / no",
+	"paid", "Cours particuliers payants (matière)", "binaire: yes / no",
+	"activities", "Activités extrascolaires", "binaire: yes / no",
+	"nursery", "A fréquenté une maternelle", "binaire: yes / no",
+	"higher", "Souhaite faire des études supérieures", "binaire: yes / no",
+	"internet", "Accès Internet à la maison", "binaire: yes / no",
+	"romantic", "En relation amoureuse", "binaire: yes / no",
+	"famrel", "Qualité des relations familiales", "numérique: 1 (très mauvaise) à 5 (excellente)",
+	"freetime", "Temps libre après l'école", "numérique: 1 (très faible) à 5 (très élevé)",
+	"goout", "Sorties avec les amis", "numérique: 1 (très faible) à 5 (très élevé)",
+	"Dalc", "Alcool en semaine", "numérique: 1 (très faible) à 5 (très élevé)",
+	"Walc", "Alcool le week-end", "numérique: 1 (très faible) à 5 (très élevé)",
+	"health", "État de santé actuel", "numérique: 1 (très mauvais) à 5 (très bon)",
+	"absences", "Nombre d'absences", "numérique: 0 à 93",
+	"G1", "Note 1er trimestre", "numérique: 0 à 20",
+	"G2", "Note 2e trimestre", "numérique: 0 à 20",
+	"G3", "Note finale", "numérique: 0 à 20"
+)
+```
+
+# Introduction {#sec-intro}
+
+## Contexte de l’étude
+
+Ce document présente une **analyse descriptive et exploratoire** (EDA) de la réussite scolaire à partir des données de Cortez & Silva (2008). Deux jeux de données sont étudiés en parallèle, correspondant à deux disciplines : **Mathématiques** et **Langue portugaise**.
+
+L’objectif est de mieux comprendre (i) les caractéristiques des élèves et de leur environnement, (ii) les distributions des notes finales (**G3**), et (iii) les associations descriptives entre variables socio‑démographiques, comportementales et scolaires.
+
+## Objectifs de l’analyse
+
+Les objectifs principaux sont :
+
+- Décrire les effectifs et profils des élèves (âge, sexe, contexte familial).
+- Comparer la performance finale (**G3**) entre Math et Portugais (distributions, statistiques résumées).
+- Explorer des associations descriptives entre variables et **G3** (corrélations, comparaisons de groupes).
+- Mettre en évidence des différences de profils / associations entre les deux disciplines.
+
+## Méthodologie
+
+L’analyse repose sur des méthodes **descriptives** et **exploratoires** en R, incluant :
+
+- `dplyr` / `tidyr` pour la manipulation et le nettoyage des données.
+- `ggplot2` pour la visualisation.
+- `forcats` pour la gestion des variables catégorielles.
+- `corrplot` pour la représentation des matrices de corrélation.
+
+### Contraintes (cahier des charges)
+
+- Pas de modélisation prédictive (pas de ML, pas de régression).
+
+## Hypothèses explicites (EDA)
+
+Les hypothèses ci-dessous servent de **fil conducteur** et seront évaluées de manière **exploratoire** (sans inférence causale) :
+
+- **H1 (Différence de performance)** : la distribution de **G3** diffère entre Mathématiques et Portugais.
+- **H2 (Rôle de l’assiduité)** : un niveau d’absences plus élevé est associé à une performance plus faible (relation descriptive).
+- **H3 (Comportements et performance)** : des variables comportementales (ex. consommation d’alcool, sorties) présentent une association descriptive avec **G3**.
+- **H4 (Hétérogénéité)** : ces associations peuvent varier selon le **contexte scolaire** (*school*) et/ou le **sexe**.
+
+# Données et préparation {#sec-data}
+
+## Chargement des fichiers
+
+```{r}
+path_mat <- file.path("data", "student-mat.csv")
+path_por <- file.path("data", "student-por.csv")
+
+if (!file.exists(path_mat) || !file.exists(path_por)) {
+	stop(
+		paste0(
+			"Fichiers manquants. Attendus:\n",
+			"- ", normalizePath(path_mat, winslash = "/", mustWork = FALSE), "\n",
+			"- ", normalizePath(path_por, winslash = "/", mustWork = FALSE), "\n"
+		)
+	)
+}
+
+math <- read.csv(path_mat, sep = ";") %>% mutate(subject = "Math")
+por  <- read.csv(path_por, sep = ";") %>% mutate(subject = "Portuguese")
+
+data <- bind_rows(math, por) %>%
+	mutate(subject = factor(subject, levels = c("Math", "Portuguese"))) %>%
+	select(-any_of(c("G1", "G2")))
+
+data %>% count(subject) %>% kable()
+```
+
+## Inspection rapide
+
+```{r}
+names(data)
+glimpse(data)
+```
+
+## Dictionnaire des variables (description des colonnes)
+
+Les définitions ci-dessous s'appliquent aux deux fichiers (Math et Portugais). Les trois notes **G1**, **G2**, **G3** sont propres à la matière.
+
+```{r}
+var_dictionary %>%
+	select(Variable = variable, Description = description, `Type / valeurs` = type_valeurs) %>%
+	kable()
+```
+
+## Préparation
+
+```{r}
+data <- data %>%
+	mutate(
+		subject = factor(subject, levels = c("Math", "Portuguese")),
+		sex = factor(sex),
+		school = factor(school),
+		address = factor(address),
+		famsize = factor(famsize),
+		Pstatus = factor(Pstatus),
+		guardian = factor(guardian),
+		schoolsup = factor(schoolsup),
+		famsup = factor(famsup),
+		paid = factor(paid),
+		activities = factor(activities),
+		nursery = factor(nursery),
+		higher = factor(higher),
+		internet = factor(internet),
+		romantic = factor(romantic),
+		studytime = factor(studytime, ordered = TRUE),
+		traveltime = factor(traveltime, ordered = TRUE),
+		famrel = factor(famrel, ordered = TRUE),
+		freetime = factor(freetime, ordered = TRUE),
+		goout = factor(goout, ordered = TRUE),
+		health = factor(health, ordered = TRUE),
+		alcohol_index = (Dalc + Walc) / 2,
+		parent_edu = pmax(Medu, Fedu, na.rm = TRUE)
+	)
+
+stopifnot(all(c("subject", "G3") %in% names(data)))
+```
+
+## Valeurs manquantes (aperçu)
+
+```{r}
+missing_summary <- data %>%
+  summarise(across(everything(), ~ sum(is.na(.x)))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
+  arrange(desc(n_missing))
+
+missing_summary %>%
+  filter(n_missing > 0) %>%
+  head(20) %>%
+  kable(caption = "Variables avec valeurs manquantes (top 20)")
+```
+
+# Analyse descriptive (Math vs Portuguese) {#sec-descriptif}
+
+## Profil démographique
+
+```{r, label="fig-sex", fig.cap="Répartition par sexe selon la discipline."}
+data %>%
+	count(subject, sex) %>%
+	ggplot(aes(x = sex, y = n, fill = sex)) +
+	geom_col() +
+	facet_wrap(~ subject) +
+	labs(title = "Répartition par sexe", x = "Sexe", y = "Effectif")
+
+```
+
+```{r, label="fig-age", fig.cap="Distribution de l'âge selon la discipline."}
+data %>%
+	ggplot(aes(x = age, fill = subject)) +
+	geom_histogram(bins = 15, alpha = 0.7, position = "identity") +
+	facet_wrap(~ subject) +
+	labs(title = "Distribution de l'âge", x = "Âge", y = "Effectif", fill = "Discipline")
+```
+
+## Performance académique (G3)
+
+```{r, label="fig-g3-dist", fig.cap="Distribution de la note finale G3 par discipline."}
+data %>%
+	ggplot(aes(x = G3, fill = subject)) +
+	geom_histogram(bins = 21, alpha = 0.7, position = "identity") +
+	facet_wrap(~ subject) +
+	labs(title = "Distribution de G3", x = "Note finale (G3)", y = "Effectif", fill = "Discipline")
+```
+
+```{r}
+data %>%
+	group_by(subject) %>%
+	summarise(
+		n = n(),
+		moyenne = mean(G3, na.rm = TRUE),
+		sd = sd(G3, na.rm = TRUE),
+		mediane = median(G3, na.rm = TRUE),
+		taux_reussite = mean(G3 >= 10, na.rm = TRUE),
+		.groups = "drop"
+	) %>%
+	kable(digits = 2, caption = "Résumé de G3 par discipline")
+```
+
+## Comparaisons quantitatives (Math vs Portugais)
+
+Cette section propose des comparaisons **quantitatives** entre disciplines. Les tests statistiques ci-dessous sont rapportés à titre **exploratoire** (sensibles aux hypothèses et à la multiplicité) et doivent être interprétés avec prudence.
+
+```{r}
+cohens_d <- function(x, y) {
+	# Cohen's d (standardized mean difference)
+	nx <- sum(!is.na(x))
+	ny <- sum(!is.na(y))
+	sx <- stats::var(x, na.rm = TRUE)
+	sy <- stats::var(y, na.rm = TRUE)
+	sp <- sqrt(((nx - 1) * sx + (ny - 1) * sy) / (nx + ny - 2))
+	(mean(x, na.rm = TRUE) - mean(y, na.rm = TRUE)) / sp
+}
+
+bootstrap_ci <- function(x, y, stat_fun, B = 2000, seed = 123) {
+	set.seed(seed)
+	x <- x[!is.na(x)]
+	y <- y[!is.na(y)]
+	if (length(x) < 2 || length(y) < 2) return(c(NA_real_, NA_real_))
+	stats <- replicate(B, {
+		xb <- sample(x, replace = TRUE)
+		yb <- sample(y, replace = TRUE)
+		stat_fun(xb, yb)
+	})
+	as.numeric(stats::quantile(stats, probs = c(0.025, 0.975), na.rm = TRUE))
+}
+
+compare_numeric <- function(df, var) {
+	x <- df %>% filter(subject == "Math") %>% pull({{ var }})
+	y <- df %>% filter(subject == "Portuguese") %>% pull({{ var }})
+
+	# Résumés
+	sum_x <- tibble(
+		n = sum(!is.na(x)),
+		mean = mean(x, na.rm = TRUE),
+		sd = sd(x, na.rm = TRUE),
+		median = median(x, na.rm = TRUE),
+		q25 = quantile(x, 0.25, na.rm = TRUE),
+		q75 = quantile(x, 0.75, na.rm = TRUE)
+	)
+	sum_y <- tibble(
+		n = sum(!is.na(y)),
+		mean = mean(y, na.rm = TRUE),
+		sd = sd(y, na.rm = TRUE),
+		median = median(y, na.rm = TRUE),
+		q25 = quantile(y, 0.25, na.rm = TRUE),
+		q75 = quantile(y, 0.75, na.rm = TRUE)
+	)
+
+	# Effet + CI bootstrap
+	d <- cohens_d(x, y)
+	d_ci <- bootstrap_ci(x, y, cohens_d)
+
+	# Wilcoxon (différence de localisation, HL estimate)
+	w <- suppressWarnings(stats::wilcox.test(x, y, conf.int = TRUE, exact = FALSE))
+
+	tibble(
+		variable = rlang::as_name(rlang::enquo(var)),
+		mean_math = sum_x$mean,
+		mean_por = sum_y$mean,
+		diff_mean = sum_x$mean - sum_y$mean,
+		median_math = sum_x$median,
+		median_por = sum_y$median,
+		diff_median = sum_x$median - sum_y$median,
+		cohens_d = d,
+		cohens_d_low = d_ci[1],
+		cohens_d_high = d_ci[2],
+		wilcox_p = w$p.value
+	)
+}
+
+# Variables numériques à comparer (inclut des construits)
+compare_df <- data %>%
+	mutate(
+		famrel_num = as.numeric(as.character(famrel)),
+		freetime_num = as.numeric(as.character(freetime)),
+		goout_num = as.numeric(as.character(goout)),
+		health_num = as.numeric(as.character(health)),
+		studytime_num = as.numeric(as.character(studytime)),
+		traveltime_num = as.numeric(as.character(traveltime))
+	)
+
+vars_to_compare <- c(
+	"G3",
+	"age",
+	"absences",
+	"failures",
+	"alcohol_index",
+	"parent_edu",
+	"studytime_num",
+	"traveltime_num"
+)
+
+vars_to_compare <- vars_to_compare[vars_to_compare %in% names(compare_df)]
+
+comparison_table <- purrr::map_dfr(vars_to_compare, ~ compare_numeric(compare_df, !!rlang::sym(.x)))
+
+comparison_table %>%
+	mutate(
+		across(where(is.numeric), ~ round(.x, 3)),
+		wilcox_p = signif(wilcox_p, 3)
+	) %>%
+	select(
+		Variable = variable,
+		`Moyenne Math` = mean_math,
+		`Moyenne Por` = mean_por,
+		`Diff. moyennes` = diff_mean,
+		`Médiane Math` = median_math,
+		`Médiane Por` = median_por,
+		`Diff. médianes` = diff_median,
+		`Cohen d` = cohens_d,
+		`d (IC95%) bas` = cohens_d_low,
+		`d (IC95%) haut` = cohens_d_high,
+		`p (Wilcoxon)` = wilcox_p
+	) %>%
+	kable(caption = "Comparaisons quantitatives Math vs Portugais (exploratoire)")
+```
+
+## Comparaisons par groupes (descriptif)
+
+```{r}
+group_vars <- intersect(c("sex", "higher", "schoolsup", "failures"), names(data))
+
+plot_group_g3 <- function(df, group_var) {
+	df %>%
+		mutate(group = as.factor(.data[[group_var]])) %>%
+		ggplot(aes(x = group, y = G3, fill = subject)) +
+		geom_boxplot(outlier.alpha = 0.25) +
+		coord_flip() +
+		labs(x = group_var, y = "G3", fill = "Discipline")
+}
+
+for (v in group_vars) print(plot_group_g3(data, v))
+```
+
+# Corrélations {#sec-corr}
+
+Les corrélations ci-dessous sont **descriptives** (Spearman).
+
+```{r, label="fig-corr", fig.cap="Matrice de corrélation (Spearman) des variables numériques."}
+num_df <- data %>% select(where(is.numeric))
+num_df <- num_df %>% select(-any_of(c("G1", "G2")))
+
+corr <- cor(num_df, use = "pairwise.complete.obs", method = "spearman")
+corrplot(corr, type = "upper", tl.cex = 0.7, number.cex = 0.6)
+
+cor_g3 <- tibble(variable = setdiff(colnames(num_df), "G3")) %>%
+	mutate(
+		rho = map_dbl(variable, ~ cor(num_df[[.x]], num_df[["G3"]],
+																 use = "pairwise.complete.obs", method = "spearman"))
+	) %>%
+	arrange(desc(abs(rho)))
+
+cor_g3 %>% kable(digits = 2, caption = "Corrélations Spearman avec G3")
+```
+
+## Exemple ciblé : consommation d'alcool et performance
+
+```{r, label="fig-alcohol-g3", fig.cap="Relation exploratoire entre l'indice d'alcool et G3, par discipline."}
+ggplot(data, aes(x = alcohol_index, y = G3)) +
+	geom_point(alpha = 0.35) +
+	geom_smooth(method = "loess", se = FALSE) +
+	facet_wrap(~ subject) +
+	labs(title = "Consommation d'alcool et performance", x = "Indice alcool", y = "G3") +
+	theme_minimal()
+```
+
+# Analyse multivariée exploratoire (ACP) {#sec-acp}
+
+L’ACP (analyse en composantes principales) permet de résumer la structure **multivariée** des variables numériques. Elle est réalisée sur des variables standardisées.
+
+```{r, include=FALSE}
+pca_df <- data %>%
+	transmute(
+		subject,
+		school,
+		sex,
+		G3,
+		age,
+		absences,
+		failures,
+		parent_edu,
+		Dalc,
+		Walc,
+		alcohol_index,
+		famrel_num = as.numeric(as.character(famrel)),
+		freetime_num = as.numeric(as.character(freetime)),
+		goout_num = as.numeric(as.character(goout)),
+		health_num = as.numeric(as.character(health)),
+		studytime_num = as.numeric(as.character(studytime)),
+		traveltime_num = as.numeric(as.character(traveltime))
+	)
+
+# Retire les colonnes entièrement NA et supprime les lignes incomplètes
+pca_numeric <- pca_df %>%
+	select(-subject, -school, -sex) %>%
+	select(where(~ !all(is.na(.x))))
+
+pca_complete <- bind_cols(
+	pca_df %>% select(subject, school, sex),
+	pca_numeric
+) %>%
+	tidyr::drop_na()
+
+pca_model <- stats::prcomp(
+	pca_complete %>% select(-subject, -school, -sex),
+	center = TRUE,
+	scale. = TRUE
+)
+
+pca_var <- (pca_model$sdev^2) / sum(pca_model$sdev^2)
+pca_var_tbl <- tibble(
+	Composante = paste0("PC", seq_along(pca_var)),
+	`Variance expliquée` = pca_var,
+	`Variance cumulée` = cumsum(pca_var)
+)
+
+pca_scores <- as_tibble(pca_model$x[, 1:2, drop = FALSE]) %>%
+	bind_cols(pca_complete %>% select(subject, school, sex))
+
+pca_loadings <- as_tibble(pca_model$rotation[, 1:2, drop = FALSE], rownames = "variable")
+```
+
+## Variance expliquée
+
+```{r}
+pca_var_tbl %>%
+	mutate(
+		`Variance expliquée` = scales::percent(`Variance expliquée`, accuracy = 0.1),
+		`Variance cumulée` = scales::percent(`Variance cumulée`, accuracy = 0.1)
+	) %>%
+	slice_head(n = 6) %>%
+	kable(caption = "Variance expliquée par les premières composantes")
+```
+
+## Projection des individus (PC1–PC2)
+
+```{r, label="fig-pca-subject", fig.cap="ACP : projection des individus (PC1–PC2) colorée par discipline."}
+ggplot(pca_scores, aes(x = PC1, y = PC2, color = subject)) +
+	geom_point(alpha = 0.35) +
+	labs(x = "PC1", y = "PC2", color = "Discipline") +
+	theme_minimal()
+```
+
+## Charges des variables (lecture des axes)
+
+```{r, label="fig-pca-loadings", fig.cap="ACP : charges des variables sur PC1–PC2 (orientation et importance)."}
+arrow_scale <- 3
+ggplot(pca_loadings, aes(x = PC1, y = PC2, label = variable)) +
+	geom_hline(yintercept = 0, linewidth = 0.3, alpha = 0.5) +
+	geom_vline(xintercept = 0, linewidth = 0.3, alpha = 0.5) +
+	geom_segment(aes(xend = PC1 * arrow_scale, yend = PC2 * arrow_scale),
+					 arrow = grid::arrow(length = unit(0.15, "inches")),
+					 alpha = 0.7
+	) +
+	geom_text(aes(x = PC1 * arrow_scale, y = PC2 * arrow_scale), size = 3, vjust = -0.4) +
+	labs(x = "PC1", y = "PC2") +
+	coord_equal() +
+	theme_minimal()
+```
+
+## Visualisation conjointe (optionnel) : facettes par école et stratification par sexe
+
+```{r, label="fig-pca-facets", fig.cap="ACP : PC1–PC2 par discipline, facettée par école, avec stratification par sexe (exploratoire)."}
+ggplot(pca_scores, aes(x = PC1, y = PC2, color = sex)) +
+	geom_point(alpha = 0.35) +
+	facet_grid(subject ~ school) +
+	labs(x = "PC1", y = "PC2", color = "Sexe") +
+	theme_minimal() +
+	theme(legend.position = "bottom")
+```
+
+# Discussion méthodologique (réflexive) {#sec-methodo}
+
+Cette section explicite des choix méthodologiques et des précautions d’interprétation.
+
+- **Nature des variables** : plusieurs variables sont ordinales (échelles 1–5). Dans certains tableaux/ACP, elles sont transformées en valeurs numériques pour l’exploration, ce qui impose une interprétation prudente.
+- **Comparaisons Math vs Portugais** : les deux disciplines correspondent à deux échantillons distincts. Les comparaisons sont donc **inter‑groupes** (non appariées) et ne capturent pas des évolutions individuelles.
+- **Mesures d’association** : l’usage de **Spearman** est adapté à des relations monotones et à des variables ordinales, mais ne décrit pas nécessairement des relations non monotones.
+- **Multiplicité** : les tests/p‑values (lorsqu’ils sont reportés) sont **exploratoires** ; un contrôle formel (ex. FDR) pourrait être discuté si l’on multiplie les comparaisons.
+- **ACP** : l’ACP suppose une structure linéaire et utilise une standardisation ; elle sert surtout à visualiser des directions de variation communes et des regroupements potentiels.
+- **Causalité** : aucune association observée ne doit être interprétée comme causale en l’absence d’un design adapté.
+
+# Conclusion {#sec-conclusion}
+
+## Synthèse des résultats principaux
+
+Cette section synthétise les principaux constats **descriptifs** de l’analyse (aucune interprétation causale).
+
+```{r, include=FALSE}
+key_counts <- data %>% count(subject, name = "n")
+
+key_age <- data %>%
+	summarise(
+		age_min = min(age, na.rm = TRUE),
+		age_median = median(age, na.rm = TRUE),
+		age_max = max(age, na.rm = TRUE)
+	)
+
+key_g3 <- data %>%
+	group_by(subject) %>%
+	summarise(
+		n = n(),
+		g3_min = min(G3, na.rm = TRUE),
+		g3_median = median(G3, na.rm = TRUE),
+		g3_mean = mean(G3, na.rm = TRUE),
+		g3_sd = sd(G3, na.rm = TRUE),
+		taux_reussite = mean(G3 >= 10, na.rm = TRUE),
+		.groups = "drop"
+	)
+
+num_df2 <- data %>% select(where(is.numeric)) %>% select(-any_of(c("G1", "G2")))
+cor_g3_all <- tibble(variable = setdiff(colnames(num_df2), "G3")) %>%
+	mutate(rho = map_dbl(variable, ~ cor(num_df2[[.x]], num_df2[["G3"]],
+																			use = "pairwise.complete.obs", method = "spearman"))) %>%
+	arrange(desc(abs(rho)))
+
+top_assoc <- cor_g3_all %>% slice_head(n = 8)
+```
+
+### 1) Échantillon et population
+
+- Volume total : `r nrow(data)` observations (Math : `r key_counts$n[key_counts$subject == 'Math']`, Portugais : `r key_counts$n[key_counts$subject == 'Portuguese']`).
+- Âge : médiane `r key_age$age_median` ans (min `r key_age$age_min`, max `r key_age$age_max`).
+
+### 2) Performance finale (G3)
+
+```{r}
+key_g3 %>%
+	mutate(
+		taux_reussite = scales::percent(taux_reussite, accuracy = 0.1),
+		g3_mean = round(g3_mean, 2),
+		g3_sd = round(g3_sd, 2)
+	) %>%
+	select(
+		Discipline = subject,
+		n,
+		`G3 min` = g3_min,
+		`G3 médiane` = g3_median,
+		`G3 moyenne` = g3_mean,
+		`G3 sd` = g3_sd,
+		`Taux réussite (G3≥10)` = taux_reussite
+	) %>%
+	kable(caption = "Synthèse de la note finale G3 par discipline")
+```
+
+### 3) Variables le plus associées à G3 (descriptif)
+
+Les variables ci-dessous ont les plus fortes corrélations (Spearman) avec **G3**.
+
+```{r}
+top_assoc %>%
+	mutate(rho = round(rho, 2)) %>%
+	rename(Variable = variable, `Corrélation Spearman (rho)` = rho) %>%
+	kable(caption = "Top associations descriptives avec G3")
+```
+
+## Implications pratiques
+
+### Pour les acteurs éducatifs
+
+- Les distributions et comparaisons (par discipline et par groupes) aident à repérer des **écarts de performance** et des profils potentiellement plus à risque, sans conclure à une causalité.
+- Les associations descriptives mettent en évidence des dimensions sur lesquelles l’établissement peut orienter des **actions de prévention** (ex. absentéisme, organisation du travail, climat familial) si elles sont confirmées par des analyses complémentaires.
+
+### Pour la gestion et le pilotage
+
+- Les indicateurs synthétiques par discipline (médiane/moyenne, taux de réussite) peuvent servir de **base de suivi** d’une cohorte ou d’un établissement.
+- Les résultats encouragent une **lecture différenciée** selon la matière (Math vs Portugais), car les distributions et associations peuvent diverger.
+
+## Limites de l’étude
+
+- Analyse descriptive : absence d’inférence causale et absence de modélisation prédictive (choix volontaire).
+- Données partiellement auto‑déclarées (comportements), donc exposées à un biais de déclaration.
+- Contexte spécifique (deux écoles, période et région données) : généralisation limitée.
+- Variables et codages : certaines variables sont ordinales et sont parfois traitées comme numériques pour l’EDA (à interpréter avec prudence).
+
+## Perspectives et recommandations
+
+### Analyses futures (sans ML/régression)
+
+- Analyses stratifiées : répéter les corrélations et comparaisons **par discipline** et **par école**.
+- Robustesse : comparer Spearman vs Kendall, vérifier l’effet des valeurs extrêmes (winsorisation/sensibilité).
+- Données manquantes : approfondir la structure des valeurs manquantes et ses conséquences descriptives.
+
+### Amélioration des données
+
+- Standardiser les libellés/codages (dictionnaire + contrôles de cohérence à l’import).
+- Enrichir (si disponible) avec des variables contextuelles (ex. indicateurs socio‑économiques, classe, enseignant) pour une lecture plus complète.
+
+## Conclusion finale
+
+Cette analyse exploratoire fournit une comparaison structurée de la réussite scolaire en **Mathématiques** et en **Langue portugaise**, et met à disposition des tableaux/visualisations reproductibles pour discuter des tendances observées, tout en respectant les contraintes méthodologiques (EDA uniquement).
+
+Date de l’analyse : `r format(Sys.Date(), '%Y-%m-%d')`  
+Outils : R `r getRversion()`, Quarto, packages `tidyverse`, `corrplot`, `knitr`.
+
+# Annexes {#sec-annexes}
+
+## Code et reproductibilité
+
+Le code complet est accessible en dépliant les blocs (boutons “Code” et “Show code” dans la page HTML).
+
+# Références {#sec-references}
+
+Cortez, P., & Silva, A. (2008). *Using Data Mining to Predict Secondary School Student Performance*. IJCSI.

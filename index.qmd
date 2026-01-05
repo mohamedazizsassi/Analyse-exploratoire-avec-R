@@ -1,21 +1,28 @@
 ---
-title: "Template Project For Elements of Applied Statistics "
-subtitle: "Template and Ideas"
+title: "Projet R (Quarto) — Analyse exploratoire"
+subtitle: "Capstone : Student Performance (Math vs Portugais)"
 ---
 
 ## Introduction
 
-This website contains a collection of template for capstone's Statistics with **R**. The aim is to provide insight in fundamental principles and 
-a broad overview and to enable students to select and understand specific books and online material to dig in deeper in the diverse and fascinating field of statistics.
+Ce site Quarto regroupe mes livrables et notes de travail pour un projet d’analyse de données en **R**.
+
+Le livrable principal est une **analyse exploratoire (EDA)** du jeu de données *Student Performance* (Cortez & Silva, 2008) comparant deux disciplines : **Mathématiques** et **Langue portugaise**.
+
+Objectifs :
+
+- Décrire la population et les variables (dictionnaire des variables).
+- Comparer quantitativement les distributions de la note finale (G3) entre disciplines.
+- Explorer des associations descriptives (corrélations, comparaisons de groupes) et une ACP.
 
 
 
 ## Related Pages
 
-* [**Lecture slides**]()
-* [**Datasets**]()
-* [Source code \ github]()
+- [Rapport EDA — Student Performance](qmd/07-student-performance-eda.html)
+
+Données (dans le repo) : `data/student-mat.csv` et `data/student-por.csv`.
 
 ## Author
 
-Abdallah Khemais
+Mohamed Aziz Sassi
