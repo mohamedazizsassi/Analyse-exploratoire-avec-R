@@ -7,8 +7,8 @@ project:
 
 website:
   title: "Analyse exploratoire de la réussite scolaire"
-  site-url: "https://nevermind78.github.io/capstone_R/"
-  repo-url: "https://github.com/nevermind78/capstone_R"
+  site-url: "https://mohamedazizsassi.github.io/Analyse-exploratoire-avec-R/"
+  repo-url: "https://github.com/mohamedazizsassi/Analyse-exploratoire-avec-R"
   
   repo-actions: [edit, issue]
   sidebar:
