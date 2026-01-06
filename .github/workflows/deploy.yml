@@ -64,9 +64,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-r4.3-packages-
 
-      # ÉTAPE CRITIQUE : Installation R depuis BINAIRES SEULEMENT
-      - name: Install R packages FROM BINARIES (NO SOURCE COMPILATION)
-        if: steps.cache-r.outputs.cache-hit != 'true'
+      # ÉTAPE CRITIQUE : Installation / vérification R depuis BINAIRES SEULEMENT
+      # (On exécute même si le cache est présent, pour garantir que les packages requis existent.)
+      - name: Install/verify R packages FROM BINARIES (NO SOURCE COMPILATION)
         run: |
           echo "⚡⚡⚡ INSTALLATION R - BINAIRES UNIQUEMENT ⚡⚡⚡"
           echo "⚠️  COMPILATION SOURCE : DÉSACTIVÉE"
@@ -136,28 +136,37 @@ jobs:
           cat('📦 Début de l\'installation des packages R...\n\n')
           
           # Packages par groupe (installation plus stable)
+          # NOTE: Le site utilise explicitement library(tidyverse) et corrplot.
           groups <- list(
             'Groupe 1 - Core' = c('rmarkdown', 'knitr'),
-            'Groupe 2 - Tidyverse' = c('dplyr', 'ggplot2', 'tidyr'),
+            'Groupe 2 - Tidyverse (meta)' = c('tidyverse'),
             'Groupe 3 - Data I/O' = c('readxl', 'lubridate'),
-            'Groupe 4 - Stats' = c('car', 'lmtest', 'gplots')
+            'Groupe 4 - Stats' = c('car', 'lmtest', 'gplots'),
+            'Groupe 5 - Viz/EDA' = c('corrplot', 'scales')
           )
           
           # Fonction d'installation avec retry
           install_group <- function(pkgs, group_name, max_retries = 2) {
             cat('\n---', group_name, '---\n')
+
+            installed <- rownames(installed.packages())
+            missing <- setdiff(pkgs, installed)
+            if (length(missing) == 0) {
+              cat('✅ Déjà installé :', paste(pkgs, collapse=', '), '\n')
+              return(TRUE)
+            }
             
             for (retry in 1:max_retries) {
               tryCatch({
-                cat('Tentative', retry, ': ', paste(pkgs, collapse=', '), '\n')
+                cat('Tentative', retry, ': ', paste(missing, collapse=', '), '\n')
                 
                 # Essayer d'abord avec type='binary'
                 result <- tryCatch({
-                  install.packages(pkgs, type = 'binary', quiet = TRUE)
+                  install.packages(missing, type = 'binary', quiet = TRUE)
                   '✅ Binaire'
                 }, error = function(e1) {
                   # Fallback sans type='binary' mais avec options anti-compilation
-                  install.packages(pkgs, quiet = TRUE)
+                  install.packages(missing, quiet = TRUE)
                   '⚠️  Standard (fallback)'
                 })
                 
@@ -183,7 +192,7 @@ jobs:
           
           # VÉRIFICATION FINALE
           cat('\n=== VÉRIFICATION DES INSTALLATIONS ===\n')
-          all_pkgs <- unlist(groups, use.names = FALSE)
+          all_pkgs <- unique(unlist(groups, use.names = FALSE))
           installed <- rownames(installed.packages())
           
           success_count <- 0
