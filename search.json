@@ -1,0 +1,305 @@
+[
+  {
+    "objectID": "qmd/student-performance-eda.html",
+    "href": "qmd/student-performance-eda.html",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "",
+    "text": "Ce document présente une analyse descriptive et exploratoire (EDA) de la réussite scolaire à partir des données de Cortez & Silva (2008). Deux jeux de données sont étudiés en parallèle, correspondant à deux disciplines : Mathématiques et Langue portugaise.\nL’objectif est de mieux comprendre (i) les caractéristiques des élèves et de leur environnement, (ii) les distributions des notes finales (G3), et (iii) les associations descriptives entre variables socio‑démographiques, comportementales et scolaires.\n\n\n\nLes objectifs principaux sont :\n\nDécrire les effectifs et profils des élèves (âge, sexe, contexte familial).\nComparer la performance finale (G3) entre Math et Portugais (distributions, statistiques résumées).\nExplorer des associations descriptives entre variables et G3 (corrélations, comparaisons de groupes).\nMettre en évidence des différences de profils / associations entre les deux disciplines.\n\n\n\n\nL’analyse repose sur des méthodes descriptives et exploratoires en R, incluant :\n\ndplyr / tidyr pour la manipulation et le nettoyage des données.\nggplot2 pour la visualisation.\nforcats pour la gestion des variables catégorielles.\ncorrplot pour la représentation des matrices de corrélation.\n\n\n\n\nPas de modélisation prédictive (pas de ML, pas de régression).\n\n\n\n\n\nLes hypothèses ci-dessous servent de fil conducteur et seront évaluées de manière exploratoire (sans inférence causale) :\n\nH1 (Différence de performance) : la distribution de G3 diffère entre Mathématiques et Portugais.\nH2 (Rôle de l’assiduité) : un niveau d’absences plus élevé est associé à une performance plus faible (relation descriptive).\nH3 (Comportements et performance) : des variables comportementales (ex. consommation d’alcool, sorties) présentent une association descriptive avec G3.\nH4 (Hétérogénéité) : ces associations peuvent varier selon le contexte scolaire (school) et/ou le sexe.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#contexte-de-létude",
+    "href": "qmd/student-performance-eda.html#contexte-de-létude",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "",
+    "text": "Ce document présente une analyse descriptive et exploratoire (EDA) de la réussite scolaire à partir des données de Cortez & Silva (2008). Deux jeux de données sont étudiés en parallèle, correspondant à deux disciplines : Mathématiques et Langue portugaise.\nL’objectif est de mieux comprendre (i) les caractéristiques des élèves et de leur environnement, (ii) les distributions des notes finales (G3), et (iii) les associations descriptives entre variables socio‑démographiques, comportementales et scolaires.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#objectifs-de-lanalyse",
+    "href": "qmd/student-performance-eda.html#objectifs-de-lanalyse",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "",
+    "text": "Les objectifs principaux sont :\n\nDécrire les effectifs et profils des élèves (âge, sexe, contexte familial).\nComparer la performance finale (G3) entre Math et Portugais (distributions, statistiques résumées).\nExplorer des associations descriptives entre variables et G3 (corrélations, comparaisons de groupes).\nMettre en évidence des différences de profils / associations entre les deux disciplines.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#méthodologie",
+    "href": "qmd/student-performance-eda.html#méthodologie",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "",
+    "text": "L’analyse repose sur des méthodes descriptives et exploratoires en R, incluant :\n\ndplyr / tidyr pour la manipulation et le nettoyage des données.\nggplot2 pour la visualisation.\nforcats pour la gestion des variables catégorielles.\ncorrplot pour la représentation des matrices de corrélation.\n\n\n\n\nPas de modélisation prédictive (pas de ML, pas de régression).",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#hypothèses-explicites-eda",
+    "href": "qmd/student-performance-eda.html#hypothèses-explicites-eda",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "",
+    "text": "Les hypothèses ci-dessous servent de fil conducteur et seront évaluées de manière exploratoire (sans inférence causale) :\n\nH1 (Différence de performance) : la distribution de G3 diffère entre Mathématiques et Portugais.\nH2 (Rôle de l’assiduité) : un niveau d’absences plus élevé est associé à une performance plus faible (relation descriptive).\nH3 (Comportements et performance) : des variables comportementales (ex. consommation d’alcool, sorties) présentent une association descriptive avec G3.\nH4 (Hétérogénéité) : ces associations peuvent varier selon le contexte scolaire (school) et/ou le sexe.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#chargement-des-fichiers",
+    "href": "qmd/student-performance-eda.html#chargement-des-fichiers",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "2.1 Chargement des fichiers",
+    "text": "2.1 Chargement des fichiers\n\n\n\n\n\nsubject\nn\n\n\n\n\nMath\n395\n\n\nPortuguese\n649",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#inspection-rapide",
+    "href": "qmd/student-performance-eda.html#inspection-rapide",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "2.2 Inspection rapide",
+    "text": "2.2 Inspection rapide\n\n\n [1] \"school\"     \"sex\"        \"age\"        \"address\"    \"famsize\"   \n [6] \"Pstatus\"    \"Medu\"       \"Fedu\"       \"Mjob\"       \"Fjob\"      \n[11] \"reason\"     \"guardian\"   \"traveltime\" \"studytime\"  \"failures\"  \n[16] \"schoolsup\"  \"famsup\"     \"paid\"       \"activities\" \"nursery\"   \n[21] \"higher\"     \"internet\"   \"romantic\"   \"famrel\"     \"freetime\"  \n[26] \"goout\"      \"Dalc\"       \"Walc\"       \"health\"     \"absences\"  \n[31] \"G3\"         \"subject\"   \n\n\nRows: 1,044\nColumns: 32\n$ school     &lt;chr&gt; \"GP\", \"GP\", \"GP\", \"GP\", \"GP\", \"GP\", \"GP\", \"GP\", \"GP\", \"GP\",…\n$ sex        &lt;chr&gt; \"F\", \"F\", \"F\", \"F\", \"F\", \"M\", \"M\", \"F\", \"M\", \"M\", \"F\", \"F\",…\n$ age        &lt;int&gt; 18, 17, 15, 15, 16, 16, 16, 17, 15, 15, 15, 15, 15, 15, 15,…\n$ address    &lt;chr&gt; \"U\", \"U\", \"U\", \"U\", \"U\", \"U\", \"U\", \"U\", \"U\", \"U\", \"U\", \"U\",…\n$ famsize    &lt;chr&gt; \"GT3\", \"GT3\", \"LE3\", \"GT3\", \"GT3\", \"LE3\", \"LE3\", \"GT3\", \"LE…\n$ Pstatus    &lt;chr&gt; \"A\", \"T\", \"T\", \"T\", \"T\", \"T\", \"T\", \"A\", \"A\", \"T\", \"T\", \"T\",…\n$ Medu       &lt;int&gt; 4, 1, 1, 4, 3, 4, 2, 4, 3, 3, 4, 2, 4, 4, 2, 4, 4, 3, 3, 4,…\n$ Fedu       &lt;int&gt; 4, 1, 1, 2, 3, 3, 2, 4, 2, 4, 4, 1, 4, 3, 2, 4, 4, 3, 2, 3,…\n$ Mjob       &lt;chr&gt; \"at_home\", \"at_home\", \"at_home\", \"health\", \"other\", \"servic…\n$ Fjob       &lt;chr&gt; \"teacher\", \"other\", \"other\", \"services\", \"other\", \"other\", …\n$ reason     &lt;chr&gt; \"course\", \"course\", \"other\", \"home\", \"home\", \"reputation\", …\n$ guardian   &lt;chr&gt; \"mother\", \"father\", \"mother\", \"mother\", \"father\", \"mother\",…\n$ traveltime &lt;int&gt; 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 3, 1, 2, 1, 1, 1, 3, 1, 1,…\n$ studytime  &lt;int&gt; 2, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 3, 1, 2, 3, 1, 3, 2, 1, 1,…\n$ failures   &lt;int&gt; 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0,…\n$ schoolsup  &lt;chr&gt; \"yes\", \"no\", \"yes\", \"no\", \"no\", \"no\", \"no\", \"yes\", \"no\", \"n…\n$ famsup     &lt;chr&gt; \"no\", \"yes\", \"no\", \"yes\", \"yes\", \"yes\", \"no\", \"yes\", \"yes\",…\n$ paid       &lt;chr&gt; \"no\", \"no\", \"yes\", \"yes\", \"yes\", \"yes\", \"no\", \"no\", \"yes\", …\n$ activities &lt;chr&gt; \"no\", \"no\", \"no\", \"yes\", \"no\", \"yes\", \"no\", \"no\", \"no\", \"ye…\n$ nursery    &lt;chr&gt; \"yes\", \"no\", \"yes\", \"yes\", \"yes\", \"yes\", \"yes\", \"yes\", \"yes…\n$ higher     &lt;chr&gt; \"yes\", \"yes\", \"yes\", \"yes\", \"yes\", \"yes\", \"yes\", \"yes\", \"ye…\n$ internet   &lt;chr&gt; \"no\", \"yes\", \"yes\", \"yes\", \"no\", \"yes\", \"yes\", \"no\", \"yes\",…\n$ romantic   &lt;chr&gt; \"no\", \"no\", \"no\", \"yes\", \"no\", \"no\", \"no\", \"no\", \"no\", \"no\"…\n$ famrel     &lt;int&gt; 4, 5, 4, 3, 4, 5, 4, 4, 4, 5, 3, 5, 4, 5, 4, 4, 3, 5, 5, 3,…\n$ freetime   &lt;int&gt; 3, 3, 3, 2, 3, 4, 4, 1, 2, 5, 3, 2, 3, 4, 5, 4, 2, 3, 5, 1,…\n$ goout      &lt;int&gt; 4, 3, 2, 2, 2, 2, 4, 4, 2, 1, 3, 2, 3, 3, 2, 4, 3, 2, 5, 3,…\n$ Dalc       &lt;int&gt; 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,…\n$ Walc       &lt;int&gt; 1, 1, 3, 1, 2, 2, 1, 1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 1, 4, 3,…\n$ health     &lt;int&gt; 3, 3, 3, 5, 5, 5, 3, 1, 1, 5, 2, 4, 5, 3, 3, 2, 2, 4, 5, 5,…\n$ absences   &lt;int&gt; 6, 4, 10, 2, 4, 10, 0, 6, 0, 0, 0, 4, 2, 2, 0, 4, 6, 4, 16,…\n$ G3         &lt;int&gt; 6, 6, 10, 15, 10, 15, 11, 6, 19, 15, 9, 12, 14, 11, 16, 14,…\n$ subject    &lt;fct&gt; Math, Math, Math, Math, Math, Math, Math, Math, Math, Math,…",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#dictionnaire-des-variables-description-des-colonnes",
+    "href": "qmd/student-performance-eda.html#dictionnaire-des-variables-description-des-colonnes",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "2.3 Dictionnaire des variables (description des colonnes)",
+    "text": "2.3 Dictionnaire des variables (description des colonnes)\nLes définitions ci-dessous s’appliquent aux deux fichiers (Math et Portugais). Les trois notes G1, G2, G3 sont propres à la matière.\n\n\n\n\n\n\n\n\n\n\nVariable\nDescription\nType / valeurs\n\n\n\n\nschool\nÉcole\nbinaire: GP (Gabriel Pereira) / MS (Mousinho da Silveira)\n\n\nsex\nSexe\nbinaire: F / M\n\n\nage\nÂge\nnumérique: 15 à 22\n\n\naddress\nType d’adresse\nbinaire: U (urbain) / R (rural)\n\n\nfamsize\nTaille de la famille\nbinaire: LE3 (≤3) / GT3 (&gt;3)\n\n\nPstatus\nCohabitation des parents\nbinaire: T (ensemble) / A (séparés)\n\n\nMedu\nÉducation de la mère\nnumérique: 0 aucun; 1 primaire; 2 5e–9e; 3 secondaire; 4 supérieur\n\n\nFedu\nÉducation du père\nnumérique: 0 aucun; 1 primaire; 2 5e–9e; 3 secondaire; 4 supérieur\n\n\nMjob\nProfession de la mère\nnominal: teacher / health / services / at_home / other\n\n\nFjob\nProfession du père\nnominal: teacher / health / services / at_home / other\n\n\nreason\nRaison du choix de l’école\nnominal: home / reputation / course / other\n\n\nguardian\nTuteur légal\nnominal: mother / father / other\n\n\ntraveltime\nTemps de trajet domicile-école\nnumérique: 1 &lt;15 min; 2 15–30; 3 30–60; 4 &gt;1h\n\n\nstudytime\nTemps d’étude hebdomadaire\nnumérique: 1 &lt;2h; 2 2–5h; 3 5–10h; 4 &gt;10h\n\n\nfailures\nÉchecs scolaires passés\nnumérique: 0–3 (valeur 4 si ≥4 dans certaines versions)\n\n\nschoolsup\nSoutien scolaire supplémentaire\nbinaire: yes / no\n\n\nfamsup\nSoutien éducatif familial\nbinaire: yes / no\n\n\npaid\nCours particuliers payants (matière)\nbinaire: yes / no\n\n\nactivities\nActivités extrascolaires\nbinaire: yes / no\n\n\nnursery\nA fréquenté une maternelle\nbinaire: yes / no\n\n\nhigher\nSouhaite faire des études supérieures\nbinaire: yes / no\n\n\ninternet\nAccès Internet à la maison\nbinaire: yes / no\n\n\nromantic\nEn relation amoureuse\nbinaire: yes / no\n\n\nfamrel\nQualité des relations familiales\nnumérique: 1 (très mauvaise) à 5 (excellente)\n\n\nfreetime\nTemps libre après l’école\nnumérique: 1 (très faible) à 5 (très élevé)\n\n\ngoout\nSorties avec les amis\nnumérique: 1 (très faible) à 5 (très élevé)\n\n\nDalc\nAlcool en semaine\nnumérique: 1 (très faible) à 5 (très élevé)\n\n\nWalc\nAlcool le week-end\nnumérique: 1 (très faible) à 5 (très élevé)\n\n\nhealth\nÉtat de santé actuel\nnumérique: 1 (très mauvais) à 5 (très bon)\n\n\nabsences\nNombre d’absences\nnumérique: 0 à 93\n\n\nG1\nNote 1er trimestre\nnumérique: 0 à 20\n\n\nG2\nNote 2e trimestre\nnumérique: 0 à 20\n\n\nG3\nNote finale\nnumérique: 0 à 20",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#préparation",
+    "href": "qmd/student-performance-eda.html#préparation",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "2.4 Préparation",
+    "text": "2.4 Préparation",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#valeurs-manquantes-aperçu",
+    "href": "qmd/student-performance-eda.html#valeurs-manquantes-aperçu",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "2.5 Valeurs manquantes (aperçu)",
+    "text": "2.5 Valeurs manquantes (aperçu)\n\n\n\nVariables avec valeurs manquantes (top 20)\n\n\nvariable\nn_missing",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#profil-démographique",
+    "href": "qmd/student-performance-eda.html#profil-démographique",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "3.1 Profil démographique",
+    "text": "3.1 Profil démographique\n\n\n\n\n\n\n\n\nFigure 1: Répartition par sexe selon la discipline.\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Distribution de l’âge selon la discipline.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#performance-académique-g3",
+    "href": "qmd/student-performance-eda.html#performance-académique-g3",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "3.2 Performance académique (G3)",
+    "text": "3.2 Performance académique (G3)\n\n\n\n\n\n\n\n\nFigure 3: Distribution de la note finale G3 par discipline.\n\n\n\n\n\n\n\n\nRésumé de G3 par discipline\n\n\nsubject\nn\nmoyenne\nsd\nmediane\ntaux_reussite\n\n\n\n\nMath\n395\n10.42\n4.58\n11\n0.67\n\n\nPortuguese\n649\n11.91\n3.23\n12\n0.85",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#comparaisons-quantitatives-math-vs-portugais",
+    "href": "qmd/student-performance-eda.html#comparaisons-quantitatives-math-vs-portugais",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "3.3 Comparaisons quantitatives (Math vs Portugais)",
+    "text": "3.3 Comparaisons quantitatives (Math vs Portugais)\nCette section propose des comparaisons quantitatives entre disciplines. Les tests statistiques ci-dessous sont rapportés à titre exploratoire (sensibles aux hypothèses et à la multiplicité) et doivent être interprétés avec prudence.\n\n\n\nComparaisons quantitatives Math vs Portugais (exploratoire)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nVariable\nMoyenne Math\nMoyenne Por\nDiff. moyennes\nMédiane Math\nMédiane Por\nDiff. médianes\nCohen d\nd (IC95%) bas\nd (IC95%) haut\np (Wilcoxon)\n\n\n\n\nG3\n10.415\n11.906\n-1.491\n11.0\n12.0\n-1\n-0.392\n-0.523\n-0.256\n0.000\n\n\nage\n16.696\n16.744\n-0.048\n17.0\n17.0\n0\n-0.039\n-0.163\n0.083\n0.469\n\n\nabsences\n5.709\n3.659\n2.049\n4.0\n2.0\n2\n0.334\n0.219\n0.452\n0.000\n\n\nfailures\n0.334\n0.222\n0.112\n0.0\n0.0\n0\n0.172\n0.046\n0.305\n0.015\n\n\nalcohol_index\n1.886\n1.891\n-0.005\n1.5\n1.5\n0\n-0.005\n-0.126\n0.119\n0.924\n\n\nparent_edu\n2.957\n2.715\n0.242\n3.0\n3.0\n0\n0.229\n0.103\n0.359\n0.000\n\n\nstudytime_num\n2.035\n1.931\n0.105\n2.0\n2.0\n0\n0.126\n0.002\n0.250\n0.041\n\n\ntraveltime_num\n1.448\n1.569\n-0.120\n1.0\n1.0\n0\n-0.165\n-0.283\n-0.045\n0.005",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#comparaisons-par-groupes-descriptif",
+    "href": "qmd/student-performance-eda.html#comparaisons-par-groupes-descriptif",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "3.4 Comparaisons par groupes (descriptif)",
+    "text": "3.4 Comparaisons par groupes (descriptif)",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#exemple-ciblé-consommation-dalcool-et-performance",
+    "href": "qmd/student-performance-eda.html#exemple-ciblé-consommation-dalcool-et-performance",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "4.1 Exemple ciblé : consommation d’alcool et performance",
+    "text": "4.1 Exemple ciblé : consommation d’alcool et performance\n\n\n\n\n\n\n\n\nFigure 6: Relation exploratoire entre l’indice d’alcool et G3, par discipline.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#variance-expliquée",
+    "href": "qmd/student-performance-eda.html#variance-expliquée",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "5.1 Variance expliquée",
+    "text": "5.1 Variance expliquée\n\n\n\nVariance expliquée par les premières composantes\n\n\nComposante\nVariance expliquée\nVariance cumulée\n\n\n\n\nPC1\n22.6%\n22.6%\n\n\nPC2\n11.9%\n34.4%\n\n\nPC3\n9.4%\n43.8%\n\n\nPC4\n8.2%\n52.1%\n\n\nPC5\n7.7%\n59.8%\n\n\nPC6\n6.9%\n66.7%",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#projection-des-individus-pc1pc2",
+    "href": "qmd/student-performance-eda.html#projection-des-individus-pc1pc2",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "5.2 Projection des individus (PC1–PC2)",
+    "text": "5.2 Projection des individus (PC1–PC2)\n\n\n\n\n\n\n\n\nFigure 7: ACP : projection des individus (PC1–PC2) colorée par discipline.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#charges-des-variables-lecture-des-axes",
+    "href": "qmd/student-performance-eda.html#charges-des-variables-lecture-des-axes",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "5.3 Charges des variables (lecture des axes)",
+    "text": "5.3 Charges des variables (lecture des axes)\n\n\n\n\n\n\n\n\nFigure 8: ACP : charges des variables sur PC1–PC2 (orientation et importance).",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe",
+    "href": "qmd/student-performance-eda.html#visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "5.4 Visualisation conjointe (optionnel) : facettes par école et stratification par sexe",
+    "text": "5.4 Visualisation conjointe (optionnel) : facettes par école et stratification par sexe\n\n\n\n\n\n\n\n\nFigure 9: ACP : PC1–PC2 par discipline, facettée par école, avec stratification par sexe (exploratoire).",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#synthèse-des-résultats-principaux",
+    "href": "qmd/student-performance-eda.html#synthèse-des-résultats-principaux",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "7.1 Synthèse des résultats principaux",
+    "text": "7.1 Synthèse des résultats principaux\nCette section synthétise les principaux constats descriptifs de l’analyse (aucune interprétation causale).\n\n7.1.1 1) Échantillon et population\n\nVolume total : 1044 observations (Math : 395, Portugais : 649).\nÂge : médiane 17 ans (min 15, max 22).\n\n\n\n7.1.2 2) Performance finale (G3)\n\n\n\nSynthèse de la note finale G3 par discipline\n\n\n\n\n\n\n\n\n\n\n\nDiscipline\nn\nG3 min\nG3 médiane\nG3 moyenne\nG3 sd\nTaux réussite (G3≥10)\n\n\n\n\nMath\n395\n0\n11\n10.42\n4.58\n67.1%\n\n\nPortuguese\n649\n0\n12\n11.91\n3.23\n84.6%\n\n\n\n\n\n\n\n7.1.3 3) Variables le plus associées à G3 (descriptif)\nLes variables ci-dessous ont les plus fortes corrélations (Spearman) avec G3.\n\n\n\nTop associations descriptives avec G3\n\n\nVariable\nCorrélation Spearman (rho)\n\n\n\n\nfailures\n-0.41\n\n\nparent_edu\n0.24\n\n\nMedu\n0.24\n\n\nFedu\n0.19\n\n\nDalc\n-0.17\n\n\nalcohol_index\n-0.17\n\n\nWalc\n-0.15\n\n\nage\n-0.11",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#implications-pratiques",
+    "href": "qmd/student-performance-eda.html#implications-pratiques",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "7.2 Implications pratiques",
+    "text": "7.2 Implications pratiques\n\n7.2.1 Pour les acteurs éducatifs\n\nLes distributions et comparaisons (par discipline et par groupes) aident à repérer des écarts de performance et des profils potentiellement plus à risque, sans conclure à une causalité.\nLes associations descriptives mettent en évidence des dimensions sur lesquelles l’établissement peut orienter des actions de prévention (ex. absentéisme, organisation du travail, climat familial) si elles sont confirmées par des analyses complémentaires.\n\n\n\n7.2.2 Pour la gestion et le pilotage\n\nLes indicateurs synthétiques par discipline (médiane/moyenne, taux de réussite) peuvent servir de base de suivi d’une cohorte ou d’un établissement.\nLes résultats encouragent une lecture différenciée selon la matière (Math vs Portugais), car les distributions et associations peuvent diverger.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#limites-de-létude",
+    "href": "qmd/student-performance-eda.html#limites-de-létude",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "7.3 Limites de l’étude",
+    "text": "7.3 Limites de l’étude\n\nAnalyse descriptive : absence d’inférence causale et absence de modélisation prédictive (choix volontaire).\nDonnées partiellement auto‑déclarées (comportements), donc exposées à un biais de déclaration.\nContexte spécifique (deux écoles, période et région données) : généralisation limitée.\nVariables et codages : certaines variables sont ordinales et sont parfois traitées comme numériques pour l’EDA (à interpréter avec prudence).",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#perspectives-et-recommandations",
+    "href": "qmd/student-performance-eda.html#perspectives-et-recommandations",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "7.4 Perspectives et recommandations",
+    "text": "7.4 Perspectives et recommandations\n\n7.4.1 Analyses futures (sans ML/régression)\n\nAnalyses stratifiées : répéter les corrélations et comparaisons par discipline et par école.\nRobustesse : comparer Spearman vs Kendall, vérifier l’effet des valeurs extrêmes (winsorisation/sensibilité).\nDonnées manquantes : approfondir la structure des valeurs manquantes et ses conséquences descriptives.\n\n\n\n7.4.2 Amélioration des données\n\nStandardiser les libellés/codages (dictionnaire + contrôles de cohérence à l’import).\nEnrichir (si disponible) avec des variables contextuelles (ex. indicateurs socio‑économiques, classe, enseignant) pour une lecture plus complète.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#conclusion-finale",
+    "href": "qmd/student-performance-eda.html#conclusion-finale",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "7.5 Conclusion finale",
+    "text": "7.5 Conclusion finale\nCette analyse exploratoire fournit une comparaison structurée de la réussite scolaire en Mathématiques et en Langue portugaise, et met à disposition des tableaux/visualisations reproductibles pour discuter des tendances observées, tout en respectant les contraintes méthodologiques (EDA uniquement).\nDate de l’analyse : 2026-01-06\nOutils : R 4.3.3, Quarto, packages tidyverse, corrplot, knitr.",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "qmd/student-performance-eda.html#code-et-reproductibilité",
+    "href": "qmd/student-performance-eda.html#code-et-reproductibilité",
+    "title": "Analyse exploratoire de la réussite scolaire",
+    "section": "8.1 Code et reproductibilité",
+    "text": "8.1 Code et reproductibilité\nLe code complet est accessible en dépliant les blocs (boutons “Code” et “Show code” dans la page HTML).",
+    "crumbs": [
+      "Projects",
+      "Analyse exploratoire de la réussite scolaire"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Projet R (Quarto) — Analyse exploratoire",
+    "section": "",
+    "text": "Ce site Quarto regroupe mes livrables et notes de travail pour un projet d’analyse de données en R.\nLe livrable principal est une analyse exploratoire (EDA) du jeu de données Student Performance (Cortez & Silva, 2008) comparant deux disciplines : Mathématiques et Langue portugaise.\nObjectifs :\n\nDécrire la population et les variables (dictionnaire des variables).\nComparer quantitativement les distributions de la note finale (G3) entre disciplines.\nExplorer des associations descriptives (corrélations, comparaisons de groupes) et une ACP."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "Projet R (Quarto) — Analyse exploratoire",
+    "section": "",
+    "text": "Ce site Quarto regroupe mes livrables et notes de travail pour un projet d’analyse de données en R.\nLe livrable principal est une analyse exploratoire (EDA) du jeu de données Student Performance (Cortez & Silva, 2008) comparant deux disciplines : Mathématiques et Langue portugaise.\nObjectifs :\n\nDécrire la population et les variables (dictionnaire des variables).\nComparer quantitativement les distributions de la note finale (G3) entre disciplines.\nExplorer des associations descriptives (corrélations, comparaisons de groupes) et une ACP."
+  },
+  {
+    "objectID": "index.html#related-pages",
+    "href": "index.html#related-pages",
+    "title": "Projet R (Quarto) — Analyse exploratoire",
+    "section": "2 Related Pages",
+    "text": "2 Related Pages\n\nRapport EDA — Student Performance\n\nDonnées (dans le repo) : data/student-mat.csv et data/student-por.csv."
+  },
+  {
+    "objectID": "index.html#author",
+    "href": "index.html#author",
+    "title": "Projet R (Quarto) — Analyse exploratoire",
+    "section": "3 Author",
+    "text": "3 Author\nMohamed Aziz Sassi"
+  }
+]
