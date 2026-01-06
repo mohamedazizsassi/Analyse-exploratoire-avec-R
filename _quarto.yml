@@ -36,7 +36,7 @@ webr:
 execute:
   freeze: true
   cache: false
-  echo: false
+  echo: true
   warning: false
   message: false
   engine: r  # ← FORCER l'utilisation de R seulement
