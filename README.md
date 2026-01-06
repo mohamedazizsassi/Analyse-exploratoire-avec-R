@@ -29,6 +29,14 @@ L’objectif est de comparer la **note finale (G3)** entre deux disciplines : **
 - Comparaisons exploratoires entre groupes (avec indicateurs d’effet)
 - **ACP** (analyse en composantes principales) sur variables numériques standardisées (exploration)
 
+## Résultats clés (synthèse)
+
+- **Échantillon** : 1 044 observations (Math : 395, Portugais : 649), âge médian 17 ans.
+- **Performance (G3)** : moyenne 10.42 (Math) vs 11.91 (Portugais) ; médiane 11 vs 12.
+- **Taux de réussite (G3 ≥ 10)** : 67.1% (Math) vs 84.6% (Portugais).
+- **Écart Math vs Portugais** : environ −1.49 point de G3 (Cohen’s d ≈ −0.39 ; test de Wilcoxon p < 0.001, à interpréter comme exploratoire).
+- **Associations descriptives avec G3 (Spearman)** : échecs passés `failures` (ρ ≈ −0.41), éducation parentale `parent_edu` (ρ ≈ +0.24), alcool `alcohol_index` (ρ ≈ −0.17), absences (ρ ≈ −0.11).
+
 ## Reproductibilité
 
 ### Prérequis
@@ -38,7 +46,7 @@ L’objectif est de comparer la **note finale (G3)** entre deux disciplines : **
 
 ### Packages R utilisés
 
-Le document charge notamment : `tidyverse`, `knitr`, `corrplot` 
+Le document charge notamment : `tidyverse`, `knitr`, `corrplot`, `scales`.
 
 ### Rendre l’analyse (HTML)
 
