@@ -370,6 +370,105 @@ plot_group_g3 <- function(df, group_var) {
 for (v in group_vars) print(plot_group_g3(data, v))
 ```
 
+## Analyse descriptive complémentaire
+
+Cette section renforce l’angle **descriptif** en détaillant :
+
+- la **répartition de l’alcool en semaine** (*Dalc*),
+- la **répartition du temps d’étude** (*studytime*),
+- et le **nombre d’absences** (*absences*) par discipline, notamment selon *studytime*.
+
+### Répartition de l’alcool en semaine (Dalc)
+
+```{r, label="fig-dalc-weekday", fig.cap="Répartition de l'alcool en semaine (Dalc) par discipline (pourcentages)."}
+dalc_labels <- c(
+	"1" = "1 (très faible)",
+	"2" = "2",
+	"3" = "3",
+	"4" = "4",
+	"5" = "5 (très élevé)"
+)
+
+data %>%
+	mutate(Dalc_f = factor(Dalc, levels = 1:5, ordered = TRUE)) %>%
+	ggplot(aes(x = Dalc_f)) +
+	geom_bar(aes(y = after_stat(count / sum(count)))) +
+	facet_wrap(~ subject) +
+	scale_x_discrete(labels = dalc_labels) +
+	scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+	labs(
+		title = "Alcool en semaine (Dalc) par discipline",
+		x = "Dalc (1–5)",
+		y = "Pourcentage"
+	) +
+	theme_minimal()
+```
+
+### Répartition du temps d’étude (studytime)
+
+```{r, label="fig-studytime-dist", fig.cap="Répartition du temps d'étude hebdomadaire (studytime) par discipline (pourcentages)."}
+study_labels <- c(
+	"1" = "< 2h",
+	"2" = "2–5h",
+	"3" = "5–10h",
+	"4" = "> 10h"
+)
+
+data %>%
+	ggplot(aes(x = studytime)) +
+	geom_bar(aes(y = after_stat(count / sum(count)))) +
+	facet_wrap(~ subject) +
+	scale_x_discrete(labels = study_labels) +
+	scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+	labs(
+		title = "Temps d'étude hebdomadaire (studytime) par discipline",
+		x = "studytime",
+		y = "Pourcentage"
+	) +
+	theme_minimal()
+```
+
+### Absences par discipline (et selon le temps d’étude)
+
+```{r, label="fig-absences-by-subject", fig.cap="Distribution du nombre d'absences par discipline (boxplot)."}
+ggplot(data, aes(x = subject, y = absences, fill = subject)) +
+	geom_boxplot(outlier.alpha = 0.25) +
+	labs(title = "Nombre d'absences par discipline", x = "Discipline", y = "Absences") +
+	theme_minimal() +
+	theme(legend.position = "none")
+```
+
+```{r}
+data %>%
+	group_by(subject, studytime) %>%
+	summarise(
+		n = n(),
+		abs_moy = mean(absences, na.rm = TRUE),
+		abs_med = median(absences, na.rm = TRUE),
+		q1 = quantile(absences, 0.25, na.rm = TRUE),
+		q3 = quantile(absences, 0.75, na.rm = TRUE),
+		.groups = "drop"
+	) %>%
+	mutate(studytime = factor(studytime, levels = levels(data$studytime), ordered = TRUE)) %>%
+	arrange(subject, studytime) %>%
+	mutate(across(c(abs_moy, abs_med, q1, q3), ~ round(.x, 2))) %>%
+	kable(caption = "Résumé des absences selon le temps d'étude, par discipline")
+```
+
+```{r, label="fig-absences-by-studytime", fig.cap="Absences selon le temps d'étude (studytime), par discipline."}
+ggplot(data, aes(x = studytime, y = absences, fill = studytime)) +
+	geom_boxplot(outlier.alpha = 0.25) +
+	facet_wrap(~ subject) +
+	scale_x_discrete(labels = study_labels) +
+	labs(
+		title = "Absences vs temps d'étude (descriptif)",
+		x = "Temps d'étude",
+		y = "Absences"
+	) +
+	theme_minimal() +
+	theme(legend.position = "none")
+```
+
 # Corrélations {#sec-corr}
 
 Les corrélations ci-dessous sont **descriptives** (Spearman).
@@ -402,111 +501,6 @@ ggplot(data, aes(x = alcohol_index, y = G3)) +
 	theme_minimal()
 ```
 
-# Analyse multivariée exploratoire (ACP) {#sec-acp}
-
-L’ACP (analyse en composantes principales) permet de résumer la structure **multivariée** des variables numériques. Elle est réalisée sur des variables standardisées.
-
-```{r, include=FALSE}
-pca_df <- data %>%
-	transmute(
-		subject,
-		school,
-		sex,
-		G3,
-		age,
-		absences,
-		failures,
-		parent_edu,
-		Dalc,
-		Walc,
-		alcohol_index,
-		famrel_num = as.numeric(as.character(famrel)),
-		freetime_num = as.numeric(as.character(freetime)),
-		goout_num = as.numeric(as.character(goout)),
-		health_num = as.numeric(as.character(health)),
-		studytime_num = as.numeric(as.character(studytime)),
-		traveltime_num = as.numeric(as.character(traveltime))
-	)
-
-# Retire les colonnes entièrement NA et supprime les lignes incomplètes
-pca_numeric <- pca_df %>%
-	select(-subject, -school, -sex) %>%
-	select(where(~ !all(is.na(.x))))
-
-pca_complete <- bind_cols(
-	pca_df %>% select(subject, school, sex),
-	pca_numeric
-) %>%
-	tidyr::drop_na()
-
-pca_model <- stats::prcomp(
-	pca_complete %>% select(-subject, -school, -sex),
-	center = TRUE,
-	scale. = TRUE
-)
-
-pca_var <- (pca_model$sdev^2) / sum(pca_model$sdev^2)
-pca_var_tbl <- tibble(
-	Composante = paste0("PC", seq_along(pca_var)),
-	`Variance expliquée` = pca_var,
-	`Variance cumulée` = cumsum(pca_var)
-)
-
-pca_scores <- as_tibble(pca_model$x[, 1:2, drop = FALSE]) %>%
-	bind_cols(pca_complete %>% select(subject, school, sex))
-
-pca_loadings <- as_tibble(pca_model$rotation[, 1:2, drop = FALSE], rownames = "variable")
-```
-
-## Variance expliquée
-
-```{r}
-pca_var_tbl %>%
-	mutate(
-		`Variance expliquée` = scales::percent(`Variance expliquée`, accuracy = 0.1),
-		`Variance cumulée` = scales::percent(`Variance cumulée`, accuracy = 0.1)
-	) %>%
-	slice_head(n = 6) %>%
-	kable(caption = "Variance expliquée par les premières composantes")
-```
-
-## Projection des individus (PC1–PC2)
-
-```{r, label="fig-pca-subject", fig.cap="ACP : projection des individus (PC1–PC2) colorée par discipline."}
-ggplot(pca_scores, aes(x = PC1, y = PC2, color = subject)) +
-	geom_point(alpha = 0.35) +
-	labs(x = "PC1", y = "PC2", color = "Discipline") +
-	theme_minimal()
-```
-
-## Charges des variables (lecture des axes)
-
-```{r, label="fig-pca-loadings", fig.cap="ACP : charges des variables sur PC1–PC2 (orientation et importance)."}
-arrow_scale <- 3
-ggplot(pca_loadings, aes(x = PC1, y = PC2, label = variable)) +
-	geom_hline(yintercept = 0, linewidth = 0.3, alpha = 0.5) +
-	geom_vline(xintercept = 0, linewidth = 0.3, alpha = 0.5) +
-	geom_segment(aes(xend = PC1 * arrow_scale, yend = PC2 * arrow_scale),
-					 arrow = grid::arrow(length = unit(0.15, "inches")),
-					 alpha = 0.7
-	) +
-	geom_text(aes(x = PC1 * arrow_scale, y = PC2 * arrow_scale), size = 3, vjust = -0.4) +
-	labs(x = "PC1", y = "PC2") +
-	coord_equal() +
-	theme_minimal()
-```
-
-## Visualisation conjointe (optionnel) : facettes par école et stratification par sexe
-
-```{r, label="fig-pca-facets", fig.cap="ACP : PC1–PC2 par discipline, facettée par école, avec stratification par sexe (exploratoire)."}
-ggplot(pca_scores, aes(x = PC1, y = PC2, color = sex)) +
-	geom_point(alpha = 0.35) +
-	facet_grid(subject ~ school) +
-	labs(x = "PC1", y = "PC2", color = "Sexe") +
-	theme_minimal() +
-	theme(legend.position = "bottom")
-```
-
 # Discussion méthodologique (réflexive) {#sec-methodo}
 
 Cette section explicite des choix méthodologiques et des précautions d’interprétation.
@@ -515,7 +509,6 @@ Cette section explicite des choix méthodologiques et des précautions d’inter
 - **Comparaisons Math vs Portugais** : les deux disciplines correspondent à deux échantillons distincts. Les comparaisons sont donc **inter‑groupes** (non appariées) et ne capturent pas des évolutions individuelles.
 - **Mesures d’association** : l’usage de **Spearman** est adapté à des relations monotones et à des variables ordinales, mais ne décrit pas nécessairement des relations non monotones.
 - **Multiplicité** : les tests/p‑values (lorsqu’ils sont reportés) sont **exploratoires** ; un contrôle formel (ex. FDR) pourrait être discuté si l’on multiplie les comparaisons.
-- **ACP** : l’ACP suppose une structure linéaire et utilise une standardisation ; elle sert surtout à visualiser des directions de variation communes et des regroupements potentiels.
 - **Causalité** : aucune association observée ne doit être interprétée comme causale en l’absence d’un design adapté.
 
 # Conclusion {#sec-conclusion}

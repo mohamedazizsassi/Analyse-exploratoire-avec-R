@@ -1,0 +1,184 @@
+---
+title: "Exploratory Data Analysis of Academic Performance"
+subtitle: "Mathematics vs Portuguese (Cortez & Silva, 2008)"
+author: "<Your Name>"
+date: "2026-01-06"
+format:
+  pptx:
+    slide-level: 2
+execute:
+  echo: false
+  warning: false
+  message: false
+  enabled: false
+---
+
+<!--
+This deck is intentionally "static": it embeds figures already rendered in docs/
+and uses hard-coded summary numbers from the report/README.
+This avoids requiring R to be installed locally to render the PPTX.
+-->
+
+## 1) Title
+
+- **Title:** Exploratory Data Analysis of Academic Performance
+- **Focus:** Mathematics vs Portuguese (two independent student cohorts)
+- **Scope:** Descriptive EDA only (no prediction, no causality)
+
+**Key message:** This talk summarizes exploratory insights on final grades (G3) across two subjects.
+
+## 2) Context & Motivation
+
+- Academic performance is multidimensional (school context, behaviors, support, study habits)
+- EDA helps:
+  - understand distributions and heterogeneity
+  - identify potential descriptive associations
+  - guide future (careful) analyses
+
+**Key message:** EDA provides a structured “map” of the data before any modeling decisions.
+
+## 3) Dataset Description
+
+- Source: **Cortez & Silva (2008)** student performance dataset
+- Two datasets (independent):
+  - Mathematics: **395 students**
+  - Portuguese: **649 students**
+- Target variable: **Final grade G3** (0–20)
+- Variables: demographics, family context, study habits, behaviors, school support
+
+**Key message:** Two separate cohorts allow comparisons by subject, but not within-student changes.
+
+## 4) Methodology (EDA Only)
+
+- Data preparation:
+  - recoding categorical variables, creating descriptive indices (e.g., alcohol index)
+- Descriptive statistics:
+  - means/medians, dispersion, pass rates
+- Exploratory association tools:
+  - histograms/boxplots/scatterplots
+  - **Spearman** correlations (robust to non-normality / ordinal variables)
+- Multivariate overview:
+  - **PCA** on standardized numeric variables
+
+**Key message:** All results are descriptive; no predictive modeling and no causal claims.
+
+## 5) Exploratory Hypotheses (Guiding Questions)
+
+- **H1:** G3 distributions differ between Mathematics and Portuguese
+- **H2:** Higher absences are descriptively associated with lower G3
+- **H3:** Behavioral variables (e.g., alcohol, going out) show descriptive associations with G3
+- **H4:** Associations may differ across context (school) and/or sex
+
+**Key message:** Hypotheses are used as a reading grid, not as confirmatory tests.
+
+## 6) Demographic Profile (Age & Sex)
+
+- Age is concentrated around mid-teen values (typical secondary school range)
+- Sex distribution is broadly comparable across subjects, but differs by cohort
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-sex-1.png)
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-age-1.png)
+
+**Key message:** Demographics provide essential context for interpreting grade differences.
+
+## 7) Distribution of Final Grades (G3)
+
+- Compare shape, spread, and central tendency of G3 by subject
+- Look for skewness, ceiling effects, and variability differences
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-g3-dist-1.png)
+
+**Key message:** Portuguese shows a higher central tendency and lower dispersion than Mathematics.
+
+## 8) Quantitative Comparison (Math vs Portuguese)
+
+- Summary (G3):
+
+| Subject | n | Mean G3 | Median G3 | Pass rate (G3≥10) |
+|---|---:|---:|---:|---:|
+| Mathematics | 395 | 10.42 | 11 | 67.1% |
+| Portuguese | 649 | 11.91 | 12 | 84.6% |
+
+- Differences (Mathematics − Portuguese):
+  - Mean difference: **-1.49**
+  - Median difference: **-1**
+  - Effect size (Cohen’s d): **≈ -0.39**
+
+**Key message:** The average Portuguese G3 is higher; the standardized difference is small-to-moderate.
+
+## 9) Variables Most Associated with G3 (Spearman)
+
+- Correlation matrix overview:
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-corr-1.png)
+
+- Top descriptive associations with G3 (Spearman, approximate):
+
+| Variable | Spearman rho with G3 |
+|---|---:|
+| failures | -0.41 |
+| parent_edu | +0.24 |
+| alcohol_index | -0.17 |
+| absences | -0.11 |
+
+- Interpretation (descriptive):
+  - Negative rho → higher values tend to coincide with lower G3
+  - Positive rho → higher values tend to coincide with higher G3
+
+**Key message:** Prior failures and parental education show strong descriptive links with final grades.
+
+## 10) Focus Example: Alcohol vs Performance
+
+- Exploratory question: does alcohol consumption co-vary with G3?
+- Use a simple scatter + smooth trend (no causal interpretation)
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-alcohol-g3-1.png)
+
+**Key message:** The alcohol–G3 relationship is weak-to-moderate and should be read as descriptive only.
+
+## 11) Additional Descriptive Focus: Weekday Alcohol & Absences
+
+- **Weekday alcohol consumption (Dalc)** is ordinal (1–5) and differs in distribution across cohorts
+- **Study time vs absences** helps describe how engagement and attendance co-vary (still descriptive)
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-dalc-weekday-1.png)
+
+![](../docs/qmd/student-performance-eda_files/figure-html/fig-absences-by-studytime-1.png)
+
+**Key message:** Attendance patterns and weekday alcohol levels provide concrete descriptive contrasts between subjects.
+
+## 12) Discussion & Methodological Limitations
+
+- Two **independent cohorts** (Math vs Portuguese): comparisons are between groups
+- Many variables are ordinal; numeric conversions are for exploration only
+- Correlations and trends:
+  - can be sensitive to confounding and non-linearities
+  - should not be interpreted as causal effects
+- Multiple comparisons: treat p-values (if shown) as exploratory
+
+**Key message:** The analysis highlights patterns, but does not establish causes.
+
+## 13) Conclusion & Key Takeaways
+
+- Portuguese shows higher G3 central tendency and pass rate than Mathematics
+- Strongest descriptive associations with G3 include:
+  - prior failures (negative)
+  - parental education (positive)
+  - some behavioral indicators (weak-to-moderate)
+- Results remain consistent with EDA scope (no modeling, no causality)
+
+**Key message:** Differences across subjects exist and are interpretable at a descriptive level.
+
+## 14) Perspectives (Future Exploratory Work)
+
+- Stratified EDA:
+  - by school and sex to assess heterogeneity
+- Robustness checks:
+  - compare Spearman vs Kendall
+  - sensitivity to outliers (winsorization)
+- Missing data:
+  - patterns, potential bias in descriptive summaries
+- Optional (still non-ML): richer descriptive visualizations (interaction plots, small multiples)
+
+**Key message:** Next steps can deepen the descriptive story without moving into prediction or causality.
