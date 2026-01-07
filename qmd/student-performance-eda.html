@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -41,7 +76,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-f4f457e805d2b247f730789ca0bbc19f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-30ae6b2e5328ac7375bd033934d6d19c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -159,45 +194,44 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#performance-académique-g3" id="toc-performance-académique-g3" class="nav-link" data-scroll-target="#performance-académique-g3"><span class="header-section-number">3.2</span> Performance académique (G3)</a></li>
   <li><a href="#comparaisons-quantitatives-math-vs-portugais" id="toc-comparaisons-quantitatives-math-vs-portugais" class="nav-link" data-scroll-target="#comparaisons-quantitatives-math-vs-portugais"><span class="header-section-number">3.3</span> Comparaisons quantitatives (Math vs Portugais)</a></li>
   <li><a href="#comparaisons-par-groupes-descriptif" id="toc-comparaisons-par-groupes-descriptif" class="nav-link" data-scroll-target="#comparaisons-par-groupes-descriptif"><span class="header-section-number">3.4</span> Comparaisons par groupes (descriptif)</a></li>
+  <li><a href="#analyse-descriptive-complémentaire" id="toc-analyse-descriptive-complémentaire" class="nav-link" data-scroll-target="#analyse-descriptive-complémentaire"><span class="header-section-number">3.5</span> Analyse descriptive complémentaire</a>
+  <ul class="collapse">
+  <li><a href="#répartition-de-lalcool-en-semaine-dalc" id="toc-répartition-de-lalcool-en-semaine-dalc" class="nav-link" data-scroll-target="#répartition-de-lalcool-en-semaine-dalc"><span class="header-section-number">3.5.1</span> Répartition de l’alcool en semaine (Dalc)</a></li>
+  <li><a href="#répartition-du-temps-détude-studytime" id="toc-répartition-du-temps-détude-studytime" class="nav-link" data-scroll-target="#répartition-du-temps-détude-studytime"><span class="header-section-number">3.5.2</span> Répartition du temps d’étude (studytime)</a></li>
+  <li><a href="#absences-par-discipline-et-selon-le-temps-détude" id="toc-absences-par-discipline-et-selon-le-temps-détude" class="nav-link" data-scroll-target="#absences-par-discipline-et-selon-le-temps-détude"><span class="header-section-number">3.5.3</span> Absences par discipline (et selon le temps d’étude)</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#sec-corr" id="toc-sec-corr" class="nav-link" data-scroll-target="#sec-corr"><span class="header-section-number">4</span> Corrélations</a>
   <ul class="collapse">
   <li><a href="#exemple-ciblé-consommation-dalcool-et-performance" id="toc-exemple-ciblé-consommation-dalcool-et-performance" class="nav-link" data-scroll-target="#exemple-ciblé-consommation-dalcool-et-performance"><span class="header-section-number">4.1</span> Exemple ciblé : consommation d’alcool et performance</a></li>
   </ul></li>
-  <li><a href="#sec-acp" id="toc-sec-acp" class="nav-link" data-scroll-target="#sec-acp"><span class="header-section-number">5</span> Analyse multivariée exploratoire (ACP)</a>
+  <li><a href="#sec-methodo" id="toc-sec-methodo" class="nav-link" data-scroll-target="#sec-methodo"><span class="header-section-number">5</span> Discussion méthodologique (réflexive)</a></li>
+  <li><a href="#sec-conclusion" id="toc-sec-conclusion" class="nav-link" data-scroll-target="#sec-conclusion"><span class="header-section-number">6</span> Conclusion</a>
   <ul class="collapse">
-  <li><a href="#variance-expliquée" id="toc-variance-expliquée" class="nav-link" data-scroll-target="#variance-expliquée"><span class="header-section-number">5.1</span> Variance expliquée</a></li>
-  <li><a href="#projection-des-individus-pc1pc2" id="toc-projection-des-individus-pc1pc2" class="nav-link" data-scroll-target="#projection-des-individus-pc1pc2"><span class="header-section-number">5.2</span> Projection des individus (PC1–PC2)</a></li>
-  <li><a href="#charges-des-variables-lecture-des-axes" id="toc-charges-des-variables-lecture-des-axes" class="nav-link" data-scroll-target="#charges-des-variables-lecture-des-axes"><span class="header-section-number">5.3</span> Charges des variables (lecture des axes)</a></li>
-  <li><a href="#visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe" id="toc-visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe" class="nav-link" data-scroll-target="#visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe"><span class="header-section-number">5.4</span> Visualisation conjointe (optionnel) : facettes par école et stratification par sexe</a></li>
-  </ul></li>
-  <li><a href="#sec-methodo" id="toc-sec-methodo" class="nav-link" data-scroll-target="#sec-methodo"><span class="header-section-number">6</span> Discussion méthodologique (réflexive)</a></li>
-  <li><a href="#sec-conclusion" id="toc-sec-conclusion" class="nav-link" data-scroll-target="#sec-conclusion"><span class="header-section-number">7</span> Conclusion</a>
+  <li><a href="#synthèse-des-résultats-principaux" id="toc-synthèse-des-résultats-principaux" class="nav-link" data-scroll-target="#synthèse-des-résultats-principaux"><span class="header-section-number">6.1</span> Synthèse des résultats principaux</a>
   <ul class="collapse">
-  <li><a href="#synthèse-des-résultats-principaux" id="toc-synthèse-des-résultats-principaux" class="nav-link" data-scroll-target="#synthèse-des-résultats-principaux"><span class="header-section-number">7.1</span> Synthèse des résultats principaux</a>
+  <li><a href="#échantillon-et-population" id="toc-échantillon-et-population" class="nav-link" data-scroll-target="#échantillon-et-population"><span class="header-section-number">6.1.1</span> 1) Échantillon et population</a></li>
+  <li><a href="#performance-finale-g3" id="toc-performance-finale-g3" class="nav-link" data-scroll-target="#performance-finale-g3"><span class="header-section-number">6.1.2</span> 2) Performance finale (G3)</a></li>
+  <li><a href="#variables-le-plus-associées-à-g3-descriptif" id="toc-variables-le-plus-associées-à-g3-descriptif" class="nav-link" data-scroll-target="#variables-le-plus-associées-à-g3-descriptif"><span class="header-section-number">6.1.3</span> 3) Variables le plus associées à G3 (descriptif)</a></li>
+  </ul></li>
+  <li><a href="#implications-pratiques" id="toc-implications-pratiques" class="nav-link" data-scroll-target="#implications-pratiques"><span class="header-section-number">6.2</span> Implications pratiques</a>
   <ul class="collapse">
-  <li><a href="#échantillon-et-population" id="toc-échantillon-et-population" class="nav-link" data-scroll-target="#échantillon-et-population"><span class="header-section-number">7.1.1</span> 1) Échantillon et population</a></li>
-  <li><a href="#performance-finale-g3" id="toc-performance-finale-g3" class="nav-link" data-scroll-target="#performance-finale-g3"><span class="header-section-number">7.1.2</span> 2) Performance finale (G3)</a></li>
-  <li><a href="#variables-le-plus-associées-à-g3-descriptif" id="toc-variables-le-plus-associées-à-g3-descriptif" class="nav-link" data-scroll-target="#variables-le-plus-associées-à-g3-descriptif"><span class="header-section-number">7.1.3</span> 3) Variables le plus associées à G3 (descriptif)</a></li>
+  <li><a href="#pour-les-acteurs-éducatifs" id="toc-pour-les-acteurs-éducatifs" class="nav-link" data-scroll-target="#pour-les-acteurs-éducatifs"><span class="header-section-number">6.2.1</span> Pour les acteurs éducatifs</a></li>
+  <li><a href="#pour-la-gestion-et-le-pilotage" id="toc-pour-la-gestion-et-le-pilotage" class="nav-link" data-scroll-target="#pour-la-gestion-et-le-pilotage"><span class="header-section-number">6.2.2</span> Pour la gestion et le pilotage</a></li>
   </ul></li>
-  <li><a href="#implications-pratiques" id="toc-implications-pratiques" class="nav-link" data-scroll-target="#implications-pratiques"><span class="header-section-number">7.2</span> Implications pratiques</a>
+  <li><a href="#limites-de-létude" id="toc-limites-de-létude" class="nav-link" data-scroll-target="#limites-de-létude"><span class="header-section-number">6.3</span> Limites de l’étude</a></li>
+  <li><a href="#perspectives-et-recommandations" id="toc-perspectives-et-recommandations" class="nav-link" data-scroll-target="#perspectives-et-recommandations"><span class="header-section-number">6.4</span> Perspectives et recommandations</a>
   <ul class="collapse">
-  <li><a href="#pour-les-acteurs-éducatifs" id="toc-pour-les-acteurs-éducatifs" class="nav-link" data-scroll-target="#pour-les-acteurs-éducatifs"><span class="header-section-number">7.2.1</span> Pour les acteurs éducatifs</a></li>
-  <li><a href="#pour-la-gestion-et-le-pilotage" id="toc-pour-la-gestion-et-le-pilotage" class="nav-link" data-scroll-target="#pour-la-gestion-et-le-pilotage"><span class="header-section-number">7.2.2</span> Pour la gestion et le pilotage</a></li>
+  <li><a href="#analyses-futures-sans-mlrégression" id="toc-analyses-futures-sans-mlrégression" class="nav-link" data-scroll-target="#analyses-futures-sans-mlrégression"><span class="header-section-number">6.4.1</span> Analyses futures (sans ML/régression)</a></li>
+  <li><a href="#amélioration-des-données" id="toc-amélioration-des-données" class="nav-link" data-scroll-target="#amélioration-des-données"><span class="header-section-number">6.4.2</span> Amélioration des données</a></li>
   </ul></li>
-  <li><a href="#limites-de-létude" id="toc-limites-de-létude" class="nav-link" data-scroll-target="#limites-de-létude"><span class="header-section-number">7.3</span> Limites de l’étude</a></li>
-  <li><a href="#perspectives-et-recommandations" id="toc-perspectives-et-recommandations" class="nav-link" data-scroll-target="#perspectives-et-recommandations"><span class="header-section-number">7.4</span> Perspectives et recommandations</a>
+  <li><a href="#conclusion-finale" id="toc-conclusion-finale" class="nav-link" data-scroll-target="#conclusion-finale"><span class="header-section-number">6.5</span> Conclusion finale</a></li>
+  </ul></li>
+  <li><a href="#sec-annexes" id="toc-sec-annexes" class="nav-link" data-scroll-target="#sec-annexes"><span class="header-section-number">7</span> Annexes</a>
   <ul class="collapse">
-  <li><a href="#analyses-futures-sans-mlrégression" id="toc-analyses-futures-sans-mlrégression" class="nav-link" data-scroll-target="#analyses-futures-sans-mlrégression"><span class="header-section-number">7.4.1</span> Analyses futures (sans ML/régression)</a></li>
-  <li><a href="#amélioration-des-données" id="toc-amélioration-des-données" class="nav-link" data-scroll-target="#amélioration-des-données"><span class="header-section-number">7.4.2</span> Amélioration des données</a></li>
+  <li><a href="#code-et-reproductibilité" id="toc-code-et-reproductibilité" class="nav-link" data-scroll-target="#code-et-reproductibilité"><span class="header-section-number">7.1</span> Code et reproductibilité</a></li>
   </ul></li>
-  <li><a href="#conclusion-finale" id="toc-conclusion-finale" class="nav-link" data-scroll-target="#conclusion-finale"><span class="header-section-number">7.5</span> Conclusion finale</a></li>
-  </ul></li>
-  <li><a href="#sec-annexes" id="toc-sec-annexes" class="nav-link" data-scroll-target="#sec-annexes"><span class="header-section-number">8</span> Annexes</a>
-  <ul class="collapse">
-  <li><a href="#code-et-reproductibilité" id="toc-code-et-reproductibilité" class="nav-link" data-scroll-target="#code-et-reproductibilité"><span class="header-section-number">8.1</span> Code et reproductibilité</a></li>
-  </ul></li>
-  <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">9</span> Références</a></li>
+  <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">8</span> Références</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/mohamedazizsassi/Analyse-exploratoire-avec-R/edit/main/qmd/student-performance-eda.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/mohamedazizsassi/Analyse-exploratoire-avec-R/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -279,6 +313,30 @@ ul.task-list li input[type="checkbox"] {
 <section id="chargement-des-fichiers" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="chargement-des-fichiers"><span class="header-section-number">2.1</span> Chargement des fichiers</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>path_mat <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"student-mat.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>path_por <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"data"</span>, <span class="st">"student-por.csv"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(path_mat) <span class="sc">||</span> <span class="sc">!</span><span class="fu">file.exists</span>(path_por)) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste0</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Fichiers manquants. Attendus:</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"- "</span>, <span class="fu">normalizePath</span>(path_mat, <span class="at">winslash =</span> <span class="st">"/"</span>, <span class="at">mustWork =</span> <span class="cn">FALSE</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"- "</span>, <span class="fu">normalizePath</span>(path_por, <span class="at">winslash =</span> <span class="st">"/"</span>, <span class="at">mustWork =</span> <span class="cn">FALSE</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>math <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(path_mat, <span class="at">sep =</span> <span class="st">";"</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">subject =</span> <span class="st">"Math"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>por  <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(path_por, <span class="at">sep =</span> <span class="st">";"</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">subject =</span> <span class="st">"Portuguese"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(math, por) <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">subject =</span> <span class="fu">factor</span>(subject, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Math"</span>, <span class="st">"Portuguese"</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"G1"</span>, <span class="st">"G2"</span>)))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">count</span>(subject) <span class="sc">%&gt;%</span> <span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -304,6 +362,10 @@ ul.task-list li input[type="checkbox"] {
 <section id="inspection-rapide" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="inspection-rapide"><span class="header-section-number">2.2</span> Inspection rapide</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "school"     "sex"        "age"        "address"    "famsize"   
  [6] "Pstatus"    "Medu"       "Fedu"       "Mjob"       "Fjob"      
@@ -313,6 +375,10 @@ ul.task-list li input[type="checkbox"] {
 [26] "goout"      "Dalc"       "Walc"       "health"     "absences"  
 [31] "G3"         "subject"   </code></pre>
 </div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1,044
 Columns: 32
@@ -355,6 +421,12 @@ $ subject    &lt;fct&gt; Math, Math, Math, Math, Math, Math, Math, Math, Math, M
 <h2 data-number="2.3" class="anchored" data-anchor-id="dictionnaire-des-variables-description-des-colonnes"><span class="header-section-number">2.3</span> Dictionnaire des variables (description des colonnes)</h2>
 <p>Les définitions ci-dessous s’appliquent aux deux fichiers (Math et Portugais). Les trois notes <strong>G1</strong>, <strong>G2</strong>, <strong>G3</strong> sont propres à la matière.</p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>var_dictionary <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">Variable =</span> variable, <span class="at">Description =</span> description, <span class="st">`</span><span class="at">Type / valeurs</span><span class="st">`</span> <span class="ot">=</span> type_valeurs) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -542,10 +614,55 @@ $ subject    &lt;fct&gt; Math, Math, Math, Math, Math, Math, Math, Math, Math, M
 </section>
 <section id="préparation" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="préparation"><span class="header-section-number">2.4</span> Préparation</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">subject =</span> <span class="fu">factor</span>(subject, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Math"</span>, <span class="st">"Portuguese"</span>)),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">sex =</span> <span class="fu">factor</span>(sex),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">school =</span> <span class="fu">factor</span>(school),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">address =</span> <span class="fu">factor</span>(address),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">famsize =</span> <span class="fu">factor</span>(famsize),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">Pstatus =</span> <span class="fu">factor</span>(Pstatus),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">guardian =</span> <span class="fu">factor</span>(guardian),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">schoolsup =</span> <span class="fu">factor</span>(schoolsup),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">famsup =</span> <span class="fu">factor</span>(famsup),</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">paid =</span> <span class="fu">factor</span>(paid),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">activities =</span> <span class="fu">factor</span>(activities),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">nursery =</span> <span class="fu">factor</span>(nursery),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">higher =</span> <span class="fu">factor</span>(higher),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">internet =</span> <span class="fu">factor</span>(internet),</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">romantic =</span> <span class="fu">factor</span>(romantic),</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">studytime =</span> <span class="fu">factor</span>(studytime, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">traveltime =</span> <span class="fu">factor</span>(traveltime, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">famrel =</span> <span class="fu">factor</span>(famrel, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">freetime =</span> <span class="fu">factor</span>(freetime, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">goout =</span> <span class="fu">factor</span>(goout, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">health =</span> <span class="fu">factor</span>(health, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">alcohol_index =</span> (Dalc <span class="sc">+</span> Walc) <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">parent_edu =</span> <span class="fu">pmax</span>(Medu, Fedu, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"subject"</span>, <span class="st">"G3"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(data)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </section>
 <section id="valeurs-manquantes-aperçu" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="valeurs-manquantes-aperçu"><span class="header-section-number">2.5</span> Valeurs manquantes (aperçu)</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>missing_summary <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.x)))) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"n_missing"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n_missing))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>missing_summary <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n_missing <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">20</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Variables avec valeurs manquantes (top 20)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top">
 <caption>Variables avec valeurs manquantes (top 20)</caption>
@@ -567,6 +684,15 @@ $ subject    &lt;fct&gt; Math, Math, Math, Math, Math, Math, Math, Math, Math, M
 <section id="profil-démographique" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="profil-démographique"><span class="header-section-number">3.1</span> Profil démographique</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(subject, sex) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> sex, <span class="at">y =</span> n, <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Répartition par sexe"</span>, <span class="at">x =</span> <span class="st">"Sexe"</span>, <span class="at">y =</span> <span class="st">"Effectif"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div id="fig-sex" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -581,6 +707,14 @@ Figure&nbsp;1: Répartition par sexe selon la discipline.
 </div>
 </div>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">fill =</span> subject)) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution de l'âge"</span>, <span class="at">x =</span> <span class="st">"Âge"</span>, <span class="at">y =</span> <span class="st">"Effectif"</span>, <span class="at">fill =</span> <span class="st">"Discipline"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div id="fig-age" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -598,6 +732,14 @@ Figure&nbsp;2: Distribution de l’âge selon la discipline.
 <section id="performance-académique-g3" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="performance-académique-g3"><span class="header-section-number">3.2</span> Performance académique (G3)</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> G3, <span class="at">fill =</span> subject)) <span class="sc">+</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">21</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution de G3"</span>, <span class="at">x =</span> <span class="st">"Note finale (G3)"</span>, <span class="at">y =</span> <span class="st">"Effectif"</span>, <span class="at">fill =</span> <span class="st">"Discipline"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div id="fig-g3-dist" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -612,6 +754,20 @@ Figure&nbsp;3: Distribution de la note finale G3 par discipline.
 </div>
 </div>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subject) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">moyenne =</span> <span class="fu">mean</span>(G3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">sd =</span> <span class="fu">sd</span>(G3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">mediane =</span> <span class="fu">median</span>(G3, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">taux_reussite =</span> <span class="fu">mean</span>(G3 <span class="sc">&gt;=</span> <span class="dv">10</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Résumé de G3 par discipline"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Résumé de G3 par discipline</caption>
@@ -651,6 +807,121 @@ Figure&nbsp;3: Distribution de la note finale G3 par discipline.
 <h2 data-number="3.3" class="anchored" data-anchor-id="comparaisons-quantitatives-math-vs-portugais"><span class="header-section-number">3.3</span> Comparaisons quantitatives (Math vs Portugais)</h2>
 <p>Cette section propose des comparaisons <strong>quantitatives</strong> entre disciplines. Les tests statistiques ci-dessous sont rapportés à titre <strong>exploratoire</strong> (sensibles aux hypothèses et à la multiplicité) et doivent être interprétés avec prudence.</p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cohens_d <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Cohen's d (standardized mean difference)</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    nx <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    ny <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(y))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    sx <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">var</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    sy <span class="ot">&lt;-</span> stats<span class="sc">::</span><span class="fu">var</span>(y, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    sp <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(((nx <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> sx <span class="sc">+</span> (ny <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> sy) <span class="sc">/</span> (nx <span class="sc">+</span> ny <span class="sc">-</span> <span class="dv">2</span>))</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    (<span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">mean</span>(y, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">/</span> sp</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>bootstrap_ci <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y, stat_fun, <span class="at">B =</span> <span class="dv">2000</span>, <span class="at">seed =</span> <span class="dv">123</span>) {</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(seed)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> x[<span class="sc">!</span><span class="fu">is.na</span>(x)]</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> y[<span class="sc">!</span><span class="fu">is.na</span>(y)]</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(x) <span class="sc">&lt;</span> <span class="dv">2</span> <span class="sc">||</span> <span class="fu">length</span>(y) <span class="sc">&lt;</span> <span class="dv">2</span>) <span class="fu">return</span>(<span class="fu">c</span>(<span class="cn">NA_real_</span>, <span class="cn">NA_real_</span>))</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    stats <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>        xb <span class="ot">&lt;-</span> <span class="fu">sample</span>(x, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>        yb <span class="ot">&lt;-</span> <span class="fu">sample</span>(y, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stat_fun</span>(xb, yb)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.numeric</span>(stats<span class="sc">::</span><span class="fu">quantile</span>(stats, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>compare_numeric <span class="ot">&lt;-</span> <span class="cf">function</span>(df, var) {</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(subject <span class="sc">==</span> <span class="st">"Math"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>({{ var }})</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> <span class="fu">filter</span>(subject <span class="sc">==</span> <span class="st">"Portuguese"</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>({{ var }})</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Résumés</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    sum_x <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(x)),</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">sd =</span> <span class="fu">sd</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">median =</span> <span class="fu">median</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">q25 =</span> <span class="fu">quantile</span>(x, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>        <span class="at">q75 =</span> <span class="fu">quantile</span>(x, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    sum_y <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(y)),</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean =</span> <span class="fu">mean</span>(y, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">sd =</span> <span class="fu">sd</span>(y, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>        <span class="at">median =</span> <span class="fu">median</span>(y, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">q25 =</span> <span class="fu">quantile</span>(y, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>        <span class="at">q75 =</span> <span class="fu">quantile</span>(y, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Effet + CI bootstrap</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>    d <span class="ot">&lt;-</span> <span class="fu">cohens_d</span>(x, y)</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>    d_ci <span class="ot">&lt;-</span> <span class="fu">bootstrap_ci</span>(x, y, cohens_d)</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Wilcoxon (différence de localisation, HL estimate)</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>    w <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(stats<span class="sc">::</span><span class="fu">wilcox.test</span>(x, y, <span class="at">conf.int =</span> <span class="cn">TRUE</span>, <span class="at">exact =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tibble</span>(</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>        <span class="at">variable =</span> rlang<span class="sc">::</span><span class="fu">as_name</span>(rlang<span class="sc">::</span><span class="fu">enquo</span>(var)),</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_math =</span> sum_x<span class="sc">$</span>mean,</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>        <span class="at">mean_por =</span> sum_y<span class="sc">$</span>mean,</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>        <span class="at">diff_mean =</span> sum_x<span class="sc">$</span>mean <span class="sc">-</span> sum_y<span class="sc">$</span>mean,</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>        <span class="at">median_math =</span> sum_x<span class="sc">$</span>median,</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>        <span class="at">median_por =</span> sum_y<span class="sc">$</span>median,</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>        <span class="at">diff_median =</span> sum_x<span class="sc">$</span>median <span class="sc">-</span> sum_y<span class="sc">$</span>median,</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>        <span class="at">cohens_d =</span> d,</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>        <span class="at">cohens_d_low =</span> d_ci[<span class="dv">1</span>],</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>        <span class="at">cohens_d_high =</span> d_ci[<span class="dv">2</span>],</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>        <span class="at">wilcox_p =</span> w<span class="sc">$</span>p.value</span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables numériques à comparer (inclut des construits)</span></span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>compare_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>        <span class="at">famrel_num =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(famrel)),</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>        <span class="at">freetime_num =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(freetime)),</span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>        <span class="at">goout_num =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(goout)),</span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>        <span class="at">health_num =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(health)),</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>        <span class="at">studytime_num =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(studytime)),</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>        <span class="at">traveltime_num =</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(traveltime))</span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>vars_to_compare <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>    <span class="st">"G3"</span>,</span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>,</span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>    <span class="st">"absences"</span>,</span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>    <span class="st">"failures"</span>,</span>
+<span id="cb13-84"><a href="#cb13-84" aria-hidden="true" tabindex="-1"></a>    <span class="st">"alcohol_index"</span>,</span>
+<span id="cb13-85"><a href="#cb13-85" aria-hidden="true" tabindex="-1"></a>    <span class="st">"parent_edu"</span>,</span>
+<span id="cb13-86"><a href="#cb13-86" aria-hidden="true" tabindex="-1"></a>    <span class="st">"studytime_num"</span>,</span>
+<span id="cb13-87"><a href="#cb13-87" aria-hidden="true" tabindex="-1"></a>    <span class="st">"traveltime_num"</span></span>
+<span id="cb13-88"><a href="#cb13-88" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-89"><a href="#cb13-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-90"><a href="#cb13-90" aria-hidden="true" tabindex="-1"></a>vars_to_compare <span class="ot">&lt;-</span> vars_to_compare[vars_to_compare <span class="sc">%in%</span> <span class="fu">names</span>(compare_df)]</span>
+<span id="cb13-91"><a href="#cb13-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-92"><a href="#cb13-92" aria-hidden="true" tabindex="-1"></a>comparison_table <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(vars_to_compare, <span class="sc">~</span> <span class="fu">compare_numeric</span>(compare_df, <span class="sc">!!</span>rlang<span class="sc">::</span><span class="fu">sym</span>(.x)))</span>
+<span id="cb13-93"><a href="#cb13-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-94"><a href="#cb13-94" aria-hidden="true" tabindex="-1"></a>comparison_table <span class="sc">%&gt;%</span></span>
+<span id="cb13-95"><a href="#cb13-95" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb13-96"><a href="#cb13-96" aria-hidden="true" tabindex="-1"></a>        <span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">3</span>)),</span>
+<span id="cb13-97"><a href="#cb13-97" aria-hidden="true" tabindex="-1"></a>        <span class="at">wilcox_p =</span> <span class="fu">signif</span>(wilcox_p, <span class="dv">3</span>)</span>
+<span id="cb13-98"><a href="#cb13-98" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-99"><a href="#cb13-99" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
+<span id="cb13-100"><a href="#cb13-100" aria-hidden="true" tabindex="-1"></a>        <span class="at">Variable =</span> variable,</span>
+<span id="cb13-101"><a href="#cb13-101" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Moyenne Math</span><span class="st">`</span> <span class="ot">=</span> mean_math,</span>
+<span id="cb13-102"><a href="#cb13-102" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Moyenne Por</span><span class="st">`</span> <span class="ot">=</span> mean_por,</span>
+<span id="cb13-103"><a href="#cb13-103" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Diff. moyennes</span><span class="st">`</span> <span class="ot">=</span> diff_mean,</span>
+<span id="cb13-104"><a href="#cb13-104" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Médiane Math</span><span class="st">`</span> <span class="ot">=</span> median_math,</span>
+<span id="cb13-105"><a href="#cb13-105" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Médiane Por</span><span class="st">`</span> <span class="ot">=</span> median_por,</span>
+<span id="cb13-106"><a href="#cb13-106" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Diff. médianes</span><span class="st">`</span> <span class="ot">=</span> diff_median,</span>
+<span id="cb13-107"><a href="#cb13-107" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Cohen d</span><span class="st">`</span> <span class="ot">=</span> cohens_d,</span>
+<span id="cb13-108"><a href="#cb13-108" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">d (IC95%) bas</span><span class="st">`</span> <span class="ot">=</span> cohens_d_low,</span>
+<span id="cb13-109"><a href="#cb13-109" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">d (IC95%) haut</span><span class="st">`</span> <span class="ot">=</span> cohens_d_high,</span>
+<span id="cb13-110"><a href="#cb13-110" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">p (Wilcoxon)</span><span class="st">`</span> <span class="ot">=</span> wilcox_p</span>
+<span id="cb13-111"><a href="#cb13-111" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-112"><a href="#cb13-112" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Comparaisons quantitatives Math vs Portugais (exploratoire)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Comparaisons quantitatives Math vs Portugais (exploratoire)</caption>
@@ -795,6 +1066,21 @@ Figure&nbsp;3: Distribution de la note finale G3 par discipline.
 <section id="comparaisons-par-groupes-descriptif" class="level2" data-number="3.4">
 <h2 data-number="3.4" class="anchored" data-anchor-id="comparaisons-par-groupes-descriptif"><span class="header-section-number">3.4</span> Comparaisons par groupes (descriptif)</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>group_vars <span class="ot">&lt;-</span> <span class="fu">intersect</span>(<span class="fu">c</span>(<span class="st">"sex"</span>, <span class="st">"higher"</span>, <span class="st">"schoolsup"</span>, <span class="st">"failures"</span>), <span class="fu">names</span>(data))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>plot_group_g3 <span class="ot">&lt;-</span> <span class="cf">function</span>(df, group_var) {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">as.factor</span>(.data[[group_var]])) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> group, <span class="at">y =</span> G3, <span class="at">fill =</span> subject)) <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_boxplot</span>(<span class="at">outlier.alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(<span class="at">x =</span> group_var, <span class="at">y =</span> <span class="st">"G3"</span>, <span class="at">fill =</span> <span class="st">"Discipline"</span>)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (v <span class="cf">in</span> group_vars) <span class="fu">print</span>(<span class="fu">plot_group_g3</span>(data, v))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -825,11 +1111,279 @@ Figure&nbsp;3: Distribution de la note finale G3 par discipline.
 </div>
 </div>
 </section>
+<section id="analyse-descriptive-complémentaire" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="analyse-descriptive-complémentaire"><span class="header-section-number">3.5</span> Analyse descriptive complémentaire</h2>
+<p>Cette section renforce l’angle <strong>descriptif</strong> en détaillant :</p>
+<ul>
+<li>la <strong>répartition de l’alcool en semaine</strong> (<em>Dalc</em>),</li>
+<li>la <strong>répartition du temps d’étude</strong> (<em>studytime</em>),</li>
+<li>et le <strong>nombre d’absences</strong> (<em>absences</em>) par discipline, notamment selon <em>studytime</em>.</li>
+</ul>
+<section id="répartition-de-lalcool-en-semaine-dalc" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="répartition-de-lalcool-en-semaine-dalc"><span class="header-section-number">3.5.1</span> Répartition de l’alcool en semaine (Dalc)</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dalc_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"1 (très faible)"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2"</span> <span class="ot">=</span> <span class="st">"2"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"3"</span> <span class="ot">=</span> <span class="st">"3"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4"</span> <span class="ot">=</span> <span class="st">"4"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"5"</span> <span class="ot">=</span> <span class="st">"5 (très élevé)"</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Dalc_f =</span> <span class="fu">factor</span>(Dalc, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Dalc_f)) <span class="sc">+</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(count <span class="sc">/</span> <span class="fu">sum</span>(count)))) <span class="sc">+</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> dalc_labels) <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Alcool en semaine (Dalc) par discipline"</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"Dalc (1–5)"</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Pourcentage"</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-dalc-weekday" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dalc-weekday-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="student-performance-eda_files/figure-html/fig-dalc-weekday-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dalc-weekday-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Répartition de l’alcool en semaine (Dalc) par discipline (pourcentages).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="répartition-du-temps-détude-studytime" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="répartition-du-temps-détude-studytime"><span class="header-section-number">3.5.2</span> Répartition du temps d’étude (studytime)</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>study_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"1"</span> <span class="ot">=</span> <span class="st">"&lt; 2h"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2"</span> <span class="ot">=</span> <span class="st">"2–5h"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"3"</span> <span class="ot">=</span> <span class="st">"5–10h"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"4"</span> <span class="ot">=</span> <span class="st">"&gt; 10h"</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> studytime)) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(count <span class="sc">/</span> <span class="fu">sum</span>(count)))) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> study_labels) <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">percent_format</span>(<span class="at">accuracy =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Temps d'étude hebdomadaire (studytime) par discipline"</span>,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"studytime"</span>,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Pourcentage"</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-studytime-dist" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-studytime-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="student-performance-eda_files/figure-html/fig-studytime-dist-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-studytime-dist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Répartition du temps d’étude hebdomadaire (studytime) par discipline (pourcentages).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="absences-par-discipline-et-selon-le-temps-détude" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="absences-par-discipline-et-selon-le-temps-détude"><span class="header-section-number">3.5.3</span> Absences par discipline (et selon le temps d’étude)</h3>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> subject, <span class="at">y =</span> absences, <span class="at">fill =</span> subject)) <span class="sc">+</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">outlier.alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Nombre d'absences par discipline"</span>, <span class="at">x =</span> <span class="st">"Discipline"</span>, <span class="at">y =</span> <span class="st">"Absences"</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-absences-by-subject" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-absences-by-subject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="student-performance-eda_files/figure-html/fig-absences-by-subject-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-absences-by-subject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Distribution du nombre d’absences par discipline (boxplot).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(subject, studytime) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">abs_moy =</span> <span class="fu">mean</span>(absences, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">abs_med =</span> <span class="fu">median</span>(absences, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">q1 =</span> <span class="fu">quantile</span>(absences, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">q3 =</span> <span class="fu">quantile</span>(absences, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">studytime =</span> <span class="fu">factor</span>(studytime, <span class="at">levels =</span> <span class="fu">levels</span>(data<span class="sc">$</span>studytime), <span class="at">ordered =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(subject, studytime) <span class="sc">%&gt;%</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(abs_moy, abs_med, q1, q3), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="dv">2</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Résumé des absences selon le temps d'étude, par discipline"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Résumé des absences selon le temps d’étude, par discipline</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">subject</th>
+<th style="text-align: left;">studytime</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">abs_moy</th>
+<th style="text-align: right;">abs_med</th>
+<th style="text-align: right;">q1</th>
+<th style="text-align: right;">q3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Math</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">5.76</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Math</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">198</td>
+<td style="text-align: right;">6.28</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Math</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">65</td>
+<td style="text-align: right;">4.54</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Math</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">4.15</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Portuguese</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">212</td>
+<td style="text-align: right;">4.34</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Portuguese</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">305</td>
+<td style="text-align: right;">3.60</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Portuguese</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">97</td>
+<td style="text-align: right;">2.62</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Portuguese</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">2.94</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> studytime, <span class="at">y =</span> absences, <span class="at">fill =</span> studytime)) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">outlier.alpha =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_discrete</span>(<span class="at">labels =</span> study_labels) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Absences vs temps d'étude (descriptif)"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"Temps d'étude"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Absences"</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-absences-by-studytime" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-absences-by-studytime-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="student-performance-eda_files/figure-html/fig-absences-by-studytime-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-absences-by-studytime-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Absences selon le temps d’étude (studytime), par discipline.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
 </section>
 <section id="sec-corr" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Corrélations</h1>
 <p>Les corrélations ci-dessous sont <strong>descriptives</strong> (Spearman).</p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>num_df <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">where</span>(is.numeric))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>num_df <span class="ot">&lt;-</span> num_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">any_of</span>(<span class="fu">c</span>(<span class="st">"G1"</span>, <span class="st">"G2"</span>)))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>corr <span class="ot">&lt;-</span> <span class="fu">cor</span>(num_df, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"spearman"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(corr, <span class="at">type =</span> <span class="st">"upper"</span>, <span class="at">tl.cex =</span> <span class="fl">0.7</span>, <span class="at">number.cex =</span> <span class="fl">0.6</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>cor_g3 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">variable =</span> <span class="fu">setdiff</span>(<span class="fu">colnames</span>(num_df), <span class="st">"G3"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">rho =</span> <span class="fu">map_dbl</span>(variable, <span class="sc">~</span> <span class="fu">cor</span>(num_df[[.x]], num_df[[<span class="st">"G3"</span>]],</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                                                                 <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>, <span class="at">method =</span> <span class="st">"spearman"</span>))</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(<span class="fu">abs</span>(rho)))</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>cor_g3 <span class="sc">%&gt;%</span> <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Corrélations Spearman avec G3"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div id="fig-corr-1" class="cell-output-display quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-corr-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -882,7 +1436,7 @@ Figure&nbsp;3: Distribution de la note finale G3 par discipline.
 </table>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-corr-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: Matrice de corrélation (Spearman) des variables numériques.
+Figure&nbsp;8: Matrice de corrélation (Spearman) des variables numériques.
 </figcaption>
 </figure>
 </div>
@@ -893,7 +1447,7 @@ Figure&nbsp;4: Matrice de corrélation (Spearman) des variables numériques.
 <img src="student-performance-eda_files/figure-html/fig-corr-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-corr-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: Matrice de corrélation (Spearman) des variables numériques.
+Figure&nbsp;9: Matrice de corrélation (Spearman) des variables numériques.
 </figcaption>
 </figure>
 </div>
@@ -902,6 +1456,15 @@ Figure&nbsp;5: Matrice de corrélation (Spearman) des variables numériques.
 <section id="exemple-ciblé-consommation-dalcool-et-performance" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="exemple-ciblé-consommation-dalcool-et-performance"><span class="header-section-number">4.1</span> Exemple ciblé : consommation d’alcool et performance</h2>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> alcohol_index, <span class="at">y =</span> G3)) <span class="sc">+</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.35</span>) <span class="sc">+</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"loess"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span> subject) <span class="sc">+</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Consommation d'alcool et performance"</span>, <span class="at">x =</span> <span class="st">"Indice alcool"</span>, <span class="at">y =</span> <span class="st">"G3"</span>) <span class="sc">+</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <div id="fig-alcohol-g3" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
@@ -909,7 +1472,7 @@ Figure&nbsp;5: Matrice de corrélation (Spearman) des variables numériques.
 <img src="student-performance-eda_files/figure-html/fig-alcohol-g3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-alcohol-g3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: Relation exploratoire entre l’indice d’alcool et G3, par discipline.
+Figure&nbsp;10: Relation exploratoire entre l’indice d’alcool et G3, par discipline.
 </figcaption>
 </figure>
 </div>
@@ -917,137 +1480,51 @@ Figure&nbsp;6: Relation exploratoire entre l’indice d’alcool et G3, par disc
 </div>
 </section>
 </section>
-<section id="sec-acp" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Analyse multivariée exploratoire (ACP)</h1>
-<p>L’ACP (analyse en composantes principales) permet de résumer la structure <strong>multivariée</strong> des variables numériques. Elle est réalisée sur des variables standardisées.</p>
-<section id="variance-expliquée" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="variance-expliquée"><span class="header-section-number">5.1</span> Variance expliquée</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<caption>Variance expliquée par les premières composantes</caption>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Composante</th>
-<th style="text-align: left;">Variance expliquée</th>
-<th style="text-align: left;">Variance cumulée</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">PC1</td>
-<td style="text-align: left;">22.6%</td>
-<td style="text-align: left;">22.6%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">PC2</td>
-<td style="text-align: left;">11.9%</td>
-<td style="text-align: left;">34.4%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">PC3</td>
-<td style="text-align: left;">9.4%</td>
-<td style="text-align: left;">43.8%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">PC4</td>
-<td style="text-align: left;">8.2%</td>
-<td style="text-align: left;">52.1%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">PC5</td>
-<td style="text-align: left;">7.7%</td>
-<td style="text-align: left;">59.8%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">PC6</td>
-<td style="text-align: left;">6.9%</td>
-<td style="text-align: left;">66.7%</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="projection-des-individus-pc1pc2" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="projection-des-individus-pc1pc2"><span class="header-section-number">5.2</span> Projection des individus (PC1–PC2)</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-pca-subject" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pca-subject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="student-performance-eda_files/figure-html/fig-pca-subject-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pca-subject-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: ACP : projection des individus (PC1–PC2) colorée par discipline.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="charges-des-variables-lecture-des-axes" class="level2" data-number="5.3">
-<h2 data-number="5.3" class="anchored" data-anchor-id="charges-des-variables-lecture-des-axes"><span class="header-section-number">5.3</span> Charges des variables (lecture des axes)</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-pca-loadings" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pca-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="student-performance-eda_files/figure-html/fig-pca-loadings-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pca-loadings-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8: ACP : charges des variables sur PC1–PC2 (orientation et importance).
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe" class="level2" data-number="5.4">
-<h2 data-number="5.4" class="anchored" data-anchor-id="visualisation-conjointe-optionnel-facettes-par-école-et-stratification-par-sexe"><span class="header-section-number">5.4</span> Visualisation conjointe (optionnel) : facettes par école et stratification par sexe</h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div id="fig-pca-facets" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-pca-facets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="student-performance-eda_files/figure-html/fig-pca-facets-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="864">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pca-facets-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;9: ACP : PC1–PC2 par discipline, facettée par école, avec stratification par sexe (exploratoire).
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="sec-methodo" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Discussion méthodologique (réflexive)</h1>
+<section id="sec-methodo" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Discussion méthodologique (réflexive)</h1>
 <p>Cette section explicite des choix méthodologiques et des précautions d’interprétation.</p>
 <ul>
 <li><strong>Nature des variables</strong> : plusieurs variables sont ordinales (échelles 1–5). Dans certains tableaux/ACP, elles sont transformées en valeurs numériques pour l’exploration, ce qui impose une interprétation prudente.</li>
 <li><strong>Comparaisons Math vs Portugais</strong> : les deux disciplines correspondent à deux échantillons distincts. Les comparaisons sont donc <strong>inter‑groupes</strong> (non appariées) et ne capturent pas des évolutions individuelles.</li>
 <li><strong>Mesures d’association</strong> : l’usage de <strong>Spearman</strong> est adapté à des relations monotones et à des variables ordinales, mais ne décrit pas nécessairement des relations non monotones.</li>
 <li><strong>Multiplicité</strong> : les tests/p‑values (lorsqu’ils sont reportés) sont <strong>exploratoires</strong> ; un contrôle formel (ex. FDR) pourrait être discuté si l’on multiplie les comparaisons.</li>
-<li><strong>ACP</strong> : l’ACP suppose une structure linéaire et utilise une standardisation ; elle sert surtout à visualiser des directions de variation communes et des regroupements potentiels.</li>
 <li><strong>Causalité</strong> : aucune association observée ne doit être interprétée comme causale en l’absence d’un design adapté.</li>
 </ul>
 </section>
-<section id="sec-conclusion" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Conclusion</h1>
-<section id="synthèse-des-résultats-principaux" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="synthèse-des-résultats-principaux"><span class="header-section-number">7.1</span> Synthèse des résultats principaux</h2>
+<section id="sec-conclusion" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Conclusion</h1>
+<section id="synthèse-des-résultats-principaux" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="synthèse-des-résultats-principaux"><span class="header-section-number">6.1</span> Synthèse des résultats principaux</h2>
 <p>Cette section synthétise les principaux constats <strong>descriptifs</strong> de l’analyse (aucune interprétation causale).</p>
-<section id="échantillon-et-population" class="level3" data-number="7.1.1">
-<h3 data-number="7.1.1" class="anchored" data-anchor-id="échantillon-et-population"><span class="header-section-number">7.1.1</span> 1) Échantillon et population</h3>
+<section id="échantillon-et-population" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="échantillon-et-population"><span class="header-section-number">6.1.1</span> 1) Échantillon et population</h3>
 <ul>
 <li>Volume total : 1044 observations (Math : 395, Portugais : 649).</li>
 <li>Âge : médiane 17 ans (min 15, max 22).</li>
 </ul>
 </section>
-<section id="performance-finale-g3" class="level3" data-number="7.1.2">
-<h3 data-number="7.1.2" class="anchored" data-anchor-id="performance-finale-g3"><span class="header-section-number">7.1.2</span> 2) Performance finale (G3)</h3>
+<section id="performance-finale-g3" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="performance-finale-g3"><span class="header-section-number">6.1.2</span> 2) Performance finale (G3)</h3>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>key_g3 <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">taux_reussite =</span> scales<span class="sc">::</span><span class="fu">percent</span>(taux_reussite, <span class="at">accuracy =</span> <span class="fl">0.1</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">g3_mean =</span> <span class="fu">round</span>(g3_mean, <span class="dv">2</span>),</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">g3_sd =</span> <span class="fu">round</span>(g3_sd, <span class="dv">2</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">Discipline =</span> subject,</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        n,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">G3 min</span><span class="st">`</span> <span class="ot">=</span> g3_min,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">G3 médiane</span><span class="st">`</span> <span class="ot">=</span> g3_median,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">G3 moyenne</span><span class="st">`</span> <span class="ot">=</span> g3_mean,</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">G3 sd</span><span class="st">`</span> <span class="ot">=</span> g3_sd,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">Taux réussite (G3≥10)</span><span class="st">`</span> <span class="ot">=</span> taux_reussite</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Synthèse de la note finale G3 par discipline"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Synthèse de la note finale G3 par discipline</caption>
@@ -1095,10 +1572,17 @@ Figure&nbsp;9: ACP : PC1–PC2 par discipline, facettée par école, avec strati
 </div>
 </div>
 </section>
-<section id="variables-le-plus-associées-à-g3-descriptif" class="level3" data-number="7.1.3">
-<h3 data-number="7.1.3" class="anchored" data-anchor-id="variables-le-plus-associées-à-g3-descriptif"><span class="header-section-number">7.1.3</span> 3) Variables le plus associées à G3 (descriptif)</h3>
+<section id="variables-le-plus-associées-à-g3-descriptif" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="variables-le-plus-associées-à-g3-descriptif"><span class="header-section-number">6.1.3</span> 3) Variables le plus associées à G3 (descriptif)</h3>
 <p>Les variables ci-dessous ont les plus fortes corrélations (Spearman) avec <strong>G3</strong>.</p>
 <div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>top_assoc <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">rho =</span> <span class="fu">round</span>(rho, <span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">Variable =</span> variable, <span class="st">`</span><span class="at">Corrélation Spearman (rho)</span><span class="st">`</span> <span class="ot">=</span> rho) <span class="sc">%&gt;%</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Top associations descriptives avec G3"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <caption>Top associations descriptives avec G3</caption>
@@ -1147,25 +1631,25 @@ Figure&nbsp;9: ACP : PC1–PC2 par discipline, facettée par école, avec strati
 </div>
 </section>
 </section>
-<section id="implications-pratiques" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="implications-pratiques"><span class="header-section-number">7.2</span> Implications pratiques</h2>
-<section id="pour-les-acteurs-éducatifs" class="level3" data-number="7.2.1">
-<h3 data-number="7.2.1" class="anchored" data-anchor-id="pour-les-acteurs-éducatifs"><span class="header-section-number">7.2.1</span> Pour les acteurs éducatifs</h3>
+<section id="implications-pratiques" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="implications-pratiques"><span class="header-section-number">6.2</span> Implications pratiques</h2>
+<section id="pour-les-acteurs-éducatifs" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="pour-les-acteurs-éducatifs"><span class="header-section-number">6.2.1</span> Pour les acteurs éducatifs</h3>
 <ul>
 <li>Les distributions et comparaisons (par discipline et par groupes) aident à repérer des <strong>écarts de performance</strong> et des profils potentiellement plus à risque, sans conclure à une causalité.</li>
 <li>Les associations descriptives mettent en évidence des dimensions sur lesquelles l’établissement peut orienter des <strong>actions de prévention</strong> (ex. absentéisme, organisation du travail, climat familial) si elles sont confirmées par des analyses complémentaires.</li>
 </ul>
 </section>
-<section id="pour-la-gestion-et-le-pilotage" class="level3" data-number="7.2.2">
-<h3 data-number="7.2.2" class="anchored" data-anchor-id="pour-la-gestion-et-le-pilotage"><span class="header-section-number">7.2.2</span> Pour la gestion et le pilotage</h3>
+<section id="pour-la-gestion-et-le-pilotage" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="pour-la-gestion-et-le-pilotage"><span class="header-section-number">6.2.2</span> Pour la gestion et le pilotage</h3>
 <ul>
 <li>Les indicateurs synthétiques par discipline (médiane/moyenne, taux de réussite) peuvent servir de <strong>base de suivi</strong> d’une cohorte ou d’un établissement.</li>
 <li>Les résultats encouragent une <strong>lecture différenciée</strong> selon la matière (Math vs Portugais), car les distributions et associations peuvent diverger.</li>
 </ul>
 </section>
 </section>
-<section id="limites-de-létude" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="limites-de-létude"><span class="header-section-number">7.3</span> Limites de l’étude</h2>
+<section id="limites-de-létude" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="limites-de-létude"><span class="header-section-number">6.3</span> Limites de l’étude</h2>
 <ul>
 <li>Analyse descriptive : absence d’inférence causale et absence de modélisation prédictive (choix volontaire).</li>
 <li>Données partiellement auto‑déclarées (comportements), donc exposées à un biais de déclaration.</li>
@@ -1173,40 +1657,40 @@ Figure&nbsp;9: ACP : PC1–PC2 par discipline, facettée par école, avec strati
 <li>Variables et codages : certaines variables sont ordinales et sont parfois traitées comme numériques pour l’EDA (à interpréter avec prudence).</li>
 </ul>
 </section>
-<section id="perspectives-et-recommandations" class="level2" data-number="7.4">
-<h2 data-number="7.4" class="anchored" data-anchor-id="perspectives-et-recommandations"><span class="header-section-number">7.4</span> Perspectives et recommandations</h2>
-<section id="analyses-futures-sans-mlrégression" class="level3" data-number="7.4.1">
-<h3 data-number="7.4.1" class="anchored" data-anchor-id="analyses-futures-sans-mlrégression"><span class="header-section-number">7.4.1</span> Analyses futures (sans ML/régression)</h3>
+<section id="perspectives-et-recommandations" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="perspectives-et-recommandations"><span class="header-section-number">6.4</span> Perspectives et recommandations</h2>
+<section id="analyses-futures-sans-mlrégression" class="level3" data-number="6.4.1">
+<h3 data-number="6.4.1" class="anchored" data-anchor-id="analyses-futures-sans-mlrégression"><span class="header-section-number">6.4.1</span> Analyses futures (sans ML/régression)</h3>
 <ul>
 <li>Analyses stratifiées : répéter les corrélations et comparaisons <strong>par discipline</strong> et <strong>par école</strong>.</li>
 <li>Robustesse : comparer Spearman vs Kendall, vérifier l’effet des valeurs extrêmes (winsorisation/sensibilité).</li>
 <li>Données manquantes : approfondir la structure des valeurs manquantes et ses conséquences descriptives.</li>
 </ul>
 </section>
-<section id="amélioration-des-données" class="level3" data-number="7.4.2">
-<h3 data-number="7.4.2" class="anchored" data-anchor-id="amélioration-des-données"><span class="header-section-number">7.4.2</span> Amélioration des données</h3>
+<section id="amélioration-des-données" class="level3" data-number="6.4.2">
+<h3 data-number="6.4.2" class="anchored" data-anchor-id="amélioration-des-données"><span class="header-section-number">6.4.2</span> Amélioration des données</h3>
 <ul>
 <li>Standardiser les libellés/codages (dictionnaire + contrôles de cohérence à l’import).</li>
 <li>Enrichir (si disponible) avec des variables contextuelles (ex. indicateurs socio‑économiques, classe, enseignant) pour une lecture plus complète.</li>
 </ul>
 </section>
 </section>
-<section id="conclusion-finale" class="level2" data-number="7.5">
-<h2 data-number="7.5" class="anchored" data-anchor-id="conclusion-finale"><span class="header-section-number">7.5</span> Conclusion finale</h2>
+<section id="conclusion-finale" class="level2" data-number="6.5">
+<h2 data-number="6.5" class="anchored" data-anchor-id="conclusion-finale"><span class="header-section-number">6.5</span> Conclusion finale</h2>
 <p>Cette analyse exploratoire fournit une comparaison structurée de la réussite scolaire en <strong>Mathématiques</strong> et en <strong>Langue portugaise</strong>, et met à disposition des tableaux/visualisations reproductibles pour discuter des tendances observées, tout en respectant les contraintes méthodologiques (EDA uniquement).</p>
-<p>Date de l’analyse : 2026-01-06<br>
-Outils : R 4.3.3, Quarto, packages <code>tidyverse</code>, <code>corrplot</code>, <code>knitr</code>.</p>
+<p>Date de l’analyse : 2026-01-07<br>
+Outils : R 4.5.2, Quarto, packages <code>tidyverse</code>, <code>corrplot</code>, <code>knitr</code>.</p>
 </section>
 </section>
-<section id="sec-annexes" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Annexes</h1>
-<section id="code-et-reproductibilité" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="code-et-reproductibilité"><span class="header-section-number">8.1</span> Code et reproductibilité</h2>
+<section id="sec-annexes" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Annexes</h1>
+<section id="code-et-reproductibilité" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="code-et-reproductibilité"><span class="header-section-number">7.1</span> Code et reproductibilité</h2>
 <p>Le code complet est accessible en dépliant les blocs (boutons “Code” et “Show code” dans la page HTML).</p>
 </section>
 </section>
-<section id="sec-references" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Références</h1>
+<section id="sec-references" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Références</h1>
 <p>Cortez, P., &amp; Silva, A. (2008). <em>Using Data Mining to Predict Secondary School Student Performance</em>. IJCSI.</p>
 
 
